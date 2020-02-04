@@ -1992,8 +1992,24 @@
 			width: 50%;
 		}
 
+		.feature-grid .last-feature {
+			width: 15%;
+			margin-right: auto;
+  			margin-left: auto;
+		}
+
 			.feature-grid .feature .content {
 				width: 60%;
+			}
+
+			.feature-grid .last-feature .content .header{
+				width: 150%;
+  				margin-left: 30px;
+			}
+
+			.feature-grid .last-feature .content .bio{
+				width: 200%;
+				margin-left: -70px;
 			}
 
 			.feature-grid .feature .image {
@@ -2001,6 +2017,11 @@
 			}
 
 				.feature-grid .feature .image img {
+					display: inline;
+					max-width: 100%;
+				}
+
+				.feature-grid .last-feature .image img {
 					display: inline;
 					max-width: 100%;
 				}
