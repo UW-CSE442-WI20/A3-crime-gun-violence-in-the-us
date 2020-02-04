@@ -1,0 +1,11 @@
+simple Worklog - preparing for writeup
+Prompt: Your deployed webpage should also include a write-up with the following components: A rationale for your design decisions. How did you choose your particular visual encodings and interaction techniques? What alternatives did you consider and how did you arrive at your ultimate choices?
+An overview of your development process. Describe how the work was split among the team members. Include a commentary on the development process, including answers to the following questions: Roughly how much time did you spend developing your application (in people-hours)? What aspects took the most time?
+
+
+
+2/3/20: Group meeting 5:30pm - around 8:00pm + self working time at home at night :D
+	discuss about what dataset to use, what visualization we want to show, what interactions we would like to have (map district filter + timeline filter). Divide into 2 subteams: one cleans data and prepare the pipeline (link csv and html and d3 etc.), one prepare the web design, d3-LA map, d3-bar chart race.
+
+
+2/3/20: Group meeting 11:30am - 
