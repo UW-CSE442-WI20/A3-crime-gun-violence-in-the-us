@@ -297,8 +297,11 @@ var lapd_divisions = {
     ]
 };
 
+var dataArray = [];
+
 for (var i = 0; i < lapd_divisions.features.length; i++) {
     var division_id = lapd_divisions.features[i].properties.external_id;
+    dataArray.push(parseFloat(division_id))
 
     console.log("Division Id " + division_id)
     // Join GeoJSON on police district to other datasets here 
@@ -330,6 +333,17 @@ var svg = d3.select(".map-chart")
     .attr("width", w)
     .attr("height", h);
 
+
+// heat map
+var minVal = d3.min(dataArray)
+var maxVal = d3.max(dataArray)
+var lowColor = '#f9f9f9'
+var highColor = '#bc2a66'
+
+var ramp = d3.scaleLinear().domain([minVal, maxVal]).range([lowColor, highColor])
+
+// // var ramp = d3.scaleQuantize([minVal, maxVal], d3.schemeYlOrRd[])
+
 // Bind data and create one path per GeoJSON feature
 svg.selectAll("path")
     .data(lapd_divisions.features)
@@ -341,6 +355,11 @@ svg.selectAll("path")
         console.log("external id  " + d.properties.external_id)
         return d.properties.external_id;
     })
+    .style("stroke", "#fff")
+    .style("stroke-width", "1")
+    .style("fill", function (d) { 
+        return ramp(d.properties.external_id) 
+    })
     .on("mouseover", handleMouseOver)
     .on("mouseout", handleMouseOut)
     .on("click", handleClick);
@@ -348,25 +367,30 @@ svg.selectAll("path")
 function handleMouseOver(d, i) {
     // Use D3 to select element, change color and size
     d3.select("p").text("District " + this.id);
-    d3.select(this).style("fill", "blue");
+    // d3.select(this).style("fill", "blue");
+    d3.select(this)
+        .style("fill", "black");
     console.log("Division:  " + d.properties.name)
 }
 
 function handleMouseOut(d, i) {
     // Use D3 to select element, change color and size
     //console.log("mouse", this);
-    d3.select(this).style("fill", "#d3d3d3");
+    d3.select(this)
+        .style("fill", function (d) {
+            return ramp(d.properties.external_id)
+        });
 }
 
 function handleClick(d, i) {
     // Use D3 to perform action on click event
-    var url;
-    if (i < 10) {
-        url = 'https://data.cityofchicago.org/resource/ijzp-q8t2.json?district=00' + this.id;
-    } else {
-        url = 'https://data.cityofchicago.org/resource/ijzp-q8t2.json?district=0' + this.id;
-    }
-    d3.json(url, function (data) {
-        console.log("url " + data);
-    });
+    d3.select(this)
+        .style("stroke", "blue")
+        .style("fill", "blue")
+        .style("stroke-width", "1px");
+
+    console.log("Division:  " + d.properties.name)
 }
+
+
+// LAPD division : http://geohub.lacity.org/datasets/lapd-divisions/data?geometry=-119.399%2C33.821%2C-117.421%2C34.220&orderBy=PREC

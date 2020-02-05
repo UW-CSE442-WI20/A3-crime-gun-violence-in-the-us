@@ -4,8 +4,25 @@ An overview of your development process. Describe how the work was split among t
 
 
 
+
+Our group wants to explore the distribution of different crimes in LA. First of all, we would like our visualization to be able to show the categories of the crimes, the count of each category, and the ranking in counts. We would also like to visually see crime counts and rankings changing with respect to time and locations. Considering these needs, we decided to use a bar chart race as our primary view. For more user friendly, we would like to have our users to specify the constraints of the filters.
+
+Therefore, the analysis consists of a racing bar chart, a map filter, and a year filter working together. The main view is the bar chart visualization. Without specifying district or year, the bar chart will show what types of crimes happen the most in Los Angelas from 2010 to 2018? The side map filter enables the users to select specific district in LA and view the crime distribution in that district. Similarly, with selecting a specific year, the user can view the distribution of that year in particular. The district filter and year filter can work together.
+
+In total, we spent around xxx hours developing our application, and the detailed work log is below. The D3 part took us a significant amount of time. Since we are new to D3, there were extra time we spent to self-learn from online tutorials and similar projects. We also experienced in challenge of making our own LA map by using the raw path data.
+
+
+
 2/3/20: Group meeting 5:30pm - around 8:00pm + self working time at home at night :D
 	discuss about what dataset to use, what visualization we want to show, what interactions we would like to have (map district filter + timeline filter). Divide into 2 subteams: one cleans data and prepare the pipeline (link csv and html and d3 etc.), one prepare the web design, d3-LA map, d3-bar chart race.
 
 
-2/3/20: Group meeting 11:30am - 
+2/3/20: Group meeting 11:30am - 7:30pm
+	LA map w/o linking to our data
+	bar chart try with example data w/o linking to our data
+	year filter w/o linking to our data
+	write-ups ongoing
+	data cleaning/prep have test.csv ready
+
+2/4/20: 
+	
