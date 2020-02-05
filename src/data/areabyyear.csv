@@ -1,0 +1,169 @@
+,Year,Area Name,count
+0,2010,77th Street,13781
+1,2010,Central,6462
+2,2010,Devonshire,10166
+3,2010,Foothill,8855
+4,2010,Harbor,8981
+5,2010,Hollenbeck,7005
+6,2010,Hollywood,8467
+7,2010,Mission,10094
+8,2010,N Hollywood,10712
+9,2010,Newton,9620
+10,2010,Northeast,10095
+11,2010,Olympic,8370
+12,2010,Pacific,10176
+13,2010,Rampart,8380
+14,2010,Southeast,10625
+15,2010,Southwest,12579
+16,2010,Topanga,9153
+17,2010,Van Nuys,9406
+18,2010,West LA,7647
+19,2010,West Valley,8778
+20,2010,Wilshire,7839
+21,2011,77th Street,13387
+22,2011,Central,6283
+23,2011,Devonshire,9004
+24,2011,Foothill,8089
+25,2011,Harbor,9099
+26,2011,Hollenbeck,6045
+27,2011,Hollywood,8304
+28,2011,Mission,9990
+29,2011,N Hollywood,9770
+30,2011,Newton,8908
+31,2011,Northeast,9144
+32,2011,Olympic,7488
+33,2011,Pacific,9101
+34,2011,Rampart,7939
+35,2011,Southeast,10510
+36,2011,Southwest,11557
+37,2011,Topanga,8369
+38,2011,Van Nuys,8660
+39,2011,West LA,7695
+40,2011,West Valley,8160
+41,2011,Wilshire,7813
+42,2012,77th Street,13413
+43,2012,Central,7110
+44,2012,Devonshire,8716
+45,2012,Foothill,7498
+46,2012,Harbor,8577
+47,2012,Hollenbeck,6465
+48,2012,Hollywood,8304
+49,2012,Mission,9896
+50,2012,N Hollywood,10295
+51,2012,Newton,8352
+52,2012,Northeast,9114
+53,2012,Olympic,7942
+54,2012,Pacific,9098
+55,2012,Rampart,8074
+56,2012,Southeast,9893
+57,2012,Southwest,11439
+58,2012,Topanga,8210
+59,2012,Van Nuys,8623
+60,2012,West LA,7690
+61,2012,West Valley,8287
+62,2012,Wilshire,7471
+63,2013,77th Street,13013
+64,2013,Central,6652
+65,2013,Devonshire,8036
+66,2013,Foothill,7082
+67,2013,Harbor,7577
+68,2013,Hollenbeck,6129
+69,2013,Hollywood,7555
+70,2013,Mission,9575
+71,2013,N Hollywood,9982
+72,2013,Newton,8010
+73,2013,Northeast,8495
+74,2013,Olympic,7626
+75,2013,Pacific,8703
+76,2013,Rampart,7568
+77,2013,Southeast,9612
+78,2013,Southwest,11022
+79,2013,Topanga,8314
+80,2013,Van Nuys,8390
+81,2013,West LA,7218
+82,2013,West Valley,7650
+83,2013,Wilshire,7214
+84,2014,77th Street,13267
+85,2014,Central,7349
+86,2014,Devonshire,7961
+87,2014,Foothill,6739
+88,2014,Harbor,7446
+89,2014,Hollenbeck,6351
+90,2014,Hollywood,7577
+91,2014,Mission,9288
+92,2014,N Hollywood,9488
+93,2014,Newton,8544
+94,2014,Northeast,9011
+95,2014,Olympic,8527
+96,2014,Pacific,9246
+97,2014,Rampart,7928
+98,2014,Southeast,9938
+99,2014,Southwest,11523
+100,2014,Topanga,7996
+101,2014,Van Nuys,8457
+102,2014,West LA,7268
+103,2014,West Valley,7314
+104,2014,Wilshire,7273
+105,2015,77th Street,13859
+106,2015,Central,9090
+107,2015,Devonshire,9224
+108,2015,Foothill,7254
+109,2015,Harbor,8937
+110,2015,Hollenbeck,7494
+111,2015,Hollywood,8793
+112,2015,Mission,9939
+113,2015,N Hollywood,10797
+114,2015,Newton,8955
+115,2015,Northeast,9561
+116,2015,Olympic,9124
+117,2015,Pacific,10268
+118,2015,Rampart,8620
+119,2015,Southeast,10504
+120,2015,Southwest,12565
+121,2015,Topanga,8926
+122,2015,Van Nuys,9499
+123,2015,West LA,8771
+124,2015,West Valley,8081
+125,2015,Wilshire,7610
+126,2016,77th Street,14603
+127,2016,Central,9599
+128,2016,Devonshire,9534
+129,2016,Foothill,7458
+130,2016,Harbor,8992
+131,2016,Hollenbeck,8608
+132,2016,Hollywood,9541
+133,2016,Mission,10311
+134,2016,N Hollywood,11176
+135,2016,Newton,10367
+136,2016,Northeast,9624
+137,2016,Olympic,9817
+138,2016,Pacific,10489
+139,2016,Rampart,8560
+140,2016,Southeast,10909
+141,2016,Southwest,13049
+142,2016,Topanga,9919
+143,2016,Van Nuys,9556
+144,2016,West LA,8487
+145,2016,West Valley,8980
+146,2016,Wilshire,8285
+147,2017,77th Street,9806
+148,2017,Central,6924
+149,2017,Devonshire,6488
+150,2017,Foothill,5000
+151,2017,Harbor,6275
+152,2017,Hollenbeck,5703
+153,2017,Hollywood,6738
+154,2017,Mission,6772
+155,2017,N Hollywood,7796
+156,2017,Newton,7496
+157,2017,Northeast,6593
+158,2017,Olympic,6903
+159,2017,Pacific,7123
+160,2017,Rampart,6058
+161,2017,Southeast,7464
+162,2017,Southwest,8652
+163,2017,Topanga,6343
+164,2017,Van Nuys,6401
+165,2017,West LA,5345
+166,2017,West Valley,6081
+167,2017,Wilshire,5812
