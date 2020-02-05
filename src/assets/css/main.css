@@ -2351,6 +2351,10 @@
 				width: 100%;
 			}
 
+			.image.fit div {
+				width: 100%;
+			}
+
 		.image.rounded {
 			border-radius: 100%;
 		}

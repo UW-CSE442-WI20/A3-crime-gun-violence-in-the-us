@@ -10,6 +10,8 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" type="text/css" href="barchartstyle.css">
+		<script src="https://d3js.org/d3.v4.min.js"></script>
 	</head>
 	<body class="landing">
 
@@ -25,7 +27,7 @@
 				<h2>LA Crimes</h2>
 				<p>Lorem ipsum dolor sit amet nullam consequat <br /> interdum vivamus donce sed libero.</p>
 				<ul class="actions">
-					<li><a href="#" class="button special big">Get Started</a></li>
+					<li><a href="test.html" class="button special big">Get Started</a></li>
 				</ul>
 			</section>
 
@@ -55,17 +57,22 @@
 							<p>Maecenas vitae tellus feugiat eleifend</p>
 						</header>
 						<div class="row 150%">
-							<div class="6u 12u$(xsmall)">
+							<div class="5u 12u$(xsmall)">
 								<div class="image fit captioned">
-									<img src="images/pic02.jpg" alt="" />
-									<h3>Lorem ipsum dolor sit amet.</h3>
+									<h3>Illum, maiores tempora cupid?</h3>
+									<img src="images/pic03.jpg" alt="" />
 								</div>
 							</div>
-							<div class="6u$ 12u$(xsmall)">
+							<div class="7u 12u$(xsmall)">
 								<div class="image fit captioned">
-									<img src="images/pic03.jpg" alt="" />
-									<h3>Illum, maiores tempora cupid?</h3>
+									<h3 class="chart-title">Adjusted net enrolment rate, primary, female (%) <span class="year"></span></h3>
+									<div id="myChart" class="chart"></div>
+									<div class="myRec"></div>
+
+									<p>Choose year:</p>
+									<select id="year"></select>
 								</div>
+								<script src="testbar.js"></script>
 							</div>
 						</div>
 						<ul class="actions">
