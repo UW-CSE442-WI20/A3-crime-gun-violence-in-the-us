@@ -1,5 +1,32 @@
 @import url(https://fonts.googleapis.com/css?family=Raleway:400,700);
 
+.map-container {
+  display: flex;
+  flex-direction: row;
+  flex-flow: row;
+}
+
+.info {
+  text-align: center;
+  height: 100%;
+  float: left;
+}
+
+.map-chart {
+  overflow: visible;
+  height: 100%;
+  /* float:right; */
+}
+
+.district {
+	fill: #d3d3d3;
+	stroke: white;
+}
+
+h1 {
+  text-align: center;
+}
+
 /*
 	Spatial by TEMPLATED
 	templated.co @templatedco

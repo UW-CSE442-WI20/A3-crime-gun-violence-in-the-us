@@ -1,10 +1,8 @@
-'use strict';
-
-const margin = {top: 20, right: 30, bottom: 40, left: 260};
-const width = 650 - margin.left - margin.right;
-const height = 350 - margin.top - margin.bottom;
+var margin = {top: 20, right: 30, bottom: 40, left: 260};
+var width = 650 - margin.left - margin.right;
+var height = 500 - margin.top - margin.bottom;
 const percentFormat = d3.format('.0%');
-const leftPadding = 5;
+var leftPadding = 5;
 var colorScale = d3.scaleOrdinal(d3["schemeCategory20"]);
 
 
@@ -53,11 +51,11 @@ function yAccessor(d) {
     return d.geoName;
 }
 
-const xScale = d3.scaleLinear()
+var xScale = d3.scaleLinear()
     .range([0, width])
     .domain([0, 1]);
 
-const yScale = d3.scaleBand()
+var yScale = d3.scaleBand()
     .rangeRound([0, height], 0.1)
     .padding(0.1);
 
@@ -88,7 +86,7 @@ if (barsG.empty()) {
     .attr('class', 'bars-g');
 }
 
-const bars = barsG
+var bars = barsG
     .selectAll('.bar')
     .data(data, yAccessor)
 
@@ -107,7 +105,7 @@ bars.enter()
     .delay(delay);
 }
 
-const svg = d3.select('.chart').append('svg')
+var svg = d3.select('.chart').append('svg')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
     .append('g')
