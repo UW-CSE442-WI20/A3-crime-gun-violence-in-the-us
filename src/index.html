@@ -11,6 +11,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<link rel="stylesheet" type="text/css" href="assets/css/barchartstyle.css">
+		<link rel="stylesheet" type="text/css" href="assets/css/map-tooltip.css">
+		<link rel="stylesheet" type="text/css" href="assets/css/yearslider.css">
 		<script src="https://d3js.org/d3.v4.min.js"></script>
 	</head>
 	<body class="landing">
@@ -64,14 +66,17 @@
 								<div class="image fit captioned">
 									<!-- <h3>Choose year:<select id="map-year"></select></h3> -->
 									<svg class="map-chart"></svg>
-									<div class="tooltip"></div>
 								</div>
+								<div class="tooltip"></div>
 								<!-- <script src="assets/js/map.js"></script> -->
 							</div>
 
 							<!-- Bar Chart -->
 							<div class="7u 12u$(xsmall)">
 								<div class="image fit captioned">
+									<div id="vis">
+										<button id="play-button">Play</button>
+									</div>
 									<h3>Choose year:<select id="year"></select></h3>
 									<!-- <h3 class="chart-title">Year <span class="year"></span></h3> -->
 									<div class="chart"></div>
