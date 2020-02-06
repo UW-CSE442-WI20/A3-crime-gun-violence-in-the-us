@@ -457,7 +457,7 @@ function drawMap(selectYear) {
                 tooltip.classed("hidden", false)
                     .style("top", (d3.event.pageY) + "px")
                     .style("left", (d3.event.pageX + 10) + "px")
-                    .html(d.properties.name + "<br>total: " +totalCrime[d.properties.external_id]);
+                    .html(d.properties.name + "<br>total: " + totalCrime[d.properties.external_id]);
             }
 
             function handleMouseOut(d, i) {
@@ -525,6 +525,7 @@ function drawMap(selectYear) {
 // Bar-chart stuff
 
 var margin = {top: 20, right: 120, bottom: 40, left: 100};
+var valueMargin = 4;
 var width = 800 - margin.left - margin.right;
 var height = 500 - margin.top - margin.bottom;
 const percentFormat = d3.format('.0%');
@@ -613,7 +614,8 @@ function drawXAxis(el) {
     el.append('g')
         .attr('class', 'axis--x')
         .attr('transform', `translate(${leftPadding},${height})`)
-        .call(d3.axisBottom(getXScale(minVal, maxVal)));
+        // .call(d3.axisBottom(getXScale(minVal, maxVal)));
+        .call(d3.axisBottom(getXScale(0, 45000)));
 }
 
 function drawYAxis(el, data, t) {
@@ -636,11 +638,14 @@ function drawBars(el, data, t) {
         .attr('class', 'bars-g');
     }
 
-    var xScale = getXScale(minVal, maxVal)
+    // var xScale = getXScale(minVal, maxVal)
+    var xScale = getXScale(0, 45000)
 
     var bars = barsG
         .selectAll('.bar')
         .data(data, yAccessor)
+
+    // var tooltip = d3.select("div.tooltip");
 
     bars.exit()
         .remove();
@@ -655,6 +660,15 @@ function drawBars(el, data, t) {
         .style('fill', function(d, i) {
             return colorScale(d.crimeType); })
         .delay(delay);
+    
+    // bars.on("mousemove", function(d){
+    //     tooltip.classed("hidden", false)
+    //             .style("top", (d3.event.pageY) + "px")
+    //             .style("left", (d3.event.pageX + 10) + "px")
+    //             .html("test");
+    // })
+    //     .on("mouseout", function(d){ tooltip.style("display", "none");});
+
 }
 
 var svg = d3.select('.chart').append('svg')
@@ -761,6 +775,13 @@ var sliderTime = d3
 
         const t = d3.transition().duration(150);
         selectedData = removeGeoAreasWithNoData(sortData(data[year]));
+
+        // overAllMinVal = getMin(selectedData)
+        // overAllMaxVal = getMax(selectedData)
+        // setXBoundaries(null)
+
+        // console.log("overAllMinVal = " + overAllMinVal);
+        // console.log("overAllMaxVal = " + overAllMaxVal);
 
         yScale.domain(selectedData.map(yAccessor));
         drawXAxis(svg, selectedData);
