@@ -692,17 +692,14 @@ function drawMap(selectYear) {
 
                 data = prepareData(rawData)
                 selectedData = removeGeoAreasWithNoData(sortData(data[year]));
-                setXBoundaries(selectedData)
+                setXBoundaries(null)
 
                 yScale.domain(selectedData.map(yAccessor));
                 drawXAxis(svg, selectedData);
                 drawYAxis(svg, selectedData, t);
                 drawBars(svg, selectedData, t);
             }
-
-
         });
-
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -715,8 +712,11 @@ var height = 500 - margin.top - margin.bottom;
 const percentFormat = d3.format('.0%');
 var leftPadding = 5;
 var colorScale = d3.scaleOrdinal(d3["schemeCategory20"]);
+
 var minVal = 0
 var maxVal = 0
+var overAllMinVal = 0
+var overAllMaxVal = 0
 var rawData = null
 var data = null
 var selectedData = null
@@ -793,7 +793,7 @@ function drawXAxis(el) {
     let axis = el.select('.axis--x');
     axis.remove()
     el.append('g')
-        .attr('class', 'axis axis--x')
+        .attr('class', 'axis--x')
         .attr('transform', `translate(${leftPadding},${height})`)
         .call(d3.axisBottom(getXScale(minVal, maxVal)));
 }
@@ -802,7 +802,7 @@ function drawYAxis(el, data, t) {
     let axis = el.select('.axis--y');
     if (axis.empty()) {
         axis = el.append('g')
-        .attr('class', 'axis axis--y');
+        .attr('class', 'axis--y');
 }
 
 axis.transition(t)
@@ -846,27 +846,32 @@ var svg = d3.select('.chart').append('svg')
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
 function setXBoundaries(selectedData){
-    minVal = getMin(selectedData)
-    maxVal = getMax(selectedData)
+    if (selectedData == null) {
+        minVal = overAllMinVal
+        maxVal = overAllMaxVal
+    } else {
+        minVal = getMin(selectedData)
+        maxVal = getMax(selectedData)
+    }
 }
 
 function getMin(selectedData) {
-    min = Number.MAX_SAFE_INTEGER
+    var min = Number.MAX_SAFE_INTEGER
     selectedData.forEach((data) => {
         if (data.value < min) {
             min = data.value
         }
-    })
+    });
     return min
 }
 
 function getMax(selectedData) {
-    max = Number.MIN_SAFE_INTEGER
+    var max = Number.MIN_SAFE_INTEGER
     selectedData.forEach((data) => {
         if (data.value > max) {
             max = data.value
         }
-    })
+    });
     return max
 }
 
@@ -876,8 +881,6 @@ d3.select("#year").on("change", function(){
     year = $(this).val();
 
     selectedData = removeGeoAreasWithNoData(sortData(data[year]));
-
-    d3.select('.year').text(year);
 
     yScale.domain(selectedData.map(yAccessor));
     drawXAxis(svg, selectedData);
@@ -894,7 +897,9 @@ fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in
     const years = Object.keys(data).map(d => +d);
     year = years[0];
     selectedData = removeCrimeTypesWithNoData(sortData(data[year]))
-    setXBoundaries(selectedData)
+    overAllMinVal = getMin(selectedData)
+    overAllMaxVal = getMax(selectedData)
+    setXBoundaries(null)
     let crimeTypes = selectedData.map(yAccessor);
 
     yScale.domain(crimeTypes);
