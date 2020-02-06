@@ -683,7 +683,7 @@ function drawMap(selectYear) {
                 d3.select("div.distric-Name")
                     .text("");
                 tooltip.html("");
-                d3.selectAll("path")
+                d3.selectAll(".district")
                     .style("stroke-width", "1px")
                     .style("stroke", "white");
 
