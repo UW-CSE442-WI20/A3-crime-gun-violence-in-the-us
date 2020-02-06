@@ -705,107 +705,7 @@ function drawMap(selectYear) {
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // LAPD division : http://geohub.lacity.org/datasets/lapd-divisions/data?geometry=-119.399%2C33.821%2C-117.421%2C34.220&orderBy=PREC
 
-////////// slider //////////
-var formatDateIntoYear = d3.timeFormat("%Y");
-var formatDate = d3.timeFormat("%Y");
-var parseDate = d3.timeParse("%y");
-
-var startDate = new Date("2010-01-01"),
-    endDate = new Date("2017-12-01");
-
-var margin = {top: 20, right: 30, bottom: 10, left: 50},
-    width = 650 - margin.left - margin.right,
-    height = 250 - margin.top - margin.bottom;
-
-var svg = d3.select("#vis")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);  
-
-// slider
-var moving = false;
-var currentValue = 0;
-var targetValue = width;
-
-var playButton = d3.select("#play-button");
-    
-var x = d3.scaleTime()
-    .domain([startDate, endDate])
-    .range([0, targetValue])
-    .clamp(true);
-
-var slider = svg.append("g")
-    .attr("class", "slider")
-    .attr("transform", "translate(" + margin.left + "," + height/5 + ")");
-
-slider.append("line")
-    .attr("class", "track")
-    .attr("x1", x.range()[0])
-    .attr("x2", x.range()[1])
-  .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-    .attr("class", "track-inset")
-  .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-    .attr("class", "track-overlay")
-    .call(d3.drag()
-        .on("start.interrupt", function() { slider.interrupt(); })
-        .on("start drag", function() {
-          currentValue = d3.event.x;
-          update(x.invert(currentValue)); 
-        })
-    );
-
-slider.insert("g", ".track-overlay")
-    .attr("class", "ticks")
-    .attr("transform", "translate(0," + 18 + ")")
-  .selectAll("text")
-    .data(x.ticks(10))
-    .enter()
-    .append("text")
-    .attr("x", x)
-    .attr("y", 10)
-    .attr("text-anchor", "middle")
-    .text(function(d) { return formatDateIntoYear(d); });
-
-var handle = slider.insert("circle", ".track-overlay")
-    .attr("class", "handle")
-    .attr("r", 9);
-
-var label = slider.append("text")  
-    .attr("class", "label")
-    .attr("text-anchor", "middle")
-    .text(formatDate(startDate))
-    .attr("transform", "translate(0," + (-25) + ")")
-
-function step() {
-    update(x.invert(currentValue));
-    currentValue = currentValue + (targetValue/151);
-    if (currentValue > targetValue) {
-      moving = false;
-      currentValue = 0;
-      clearInterval(timer);
-      // timer = 0;
-      playButton.text("Play");
-      console.log("Slider moving: " + moving);
-    }
-}
-
-function update(h) {
-    // update position and text of label according to slider scale
-    handle.attr("cx", x(h));
-    label
-      .attr("x", x(h))
-      .text(formatDate(h));
-  
-    // filter data set and redraw plot
-    var newData = dataset.filter(function(d) {
-      return d.date < h;
-    })
-    drawPlot(newData);
-}
-////////// slider ends //////////
-
-
-// bar-chart
+// Bar-chart stuff
 
 var margin = {top: 20, right: 30, bottom: 40, left: 260};
 var width = 650 - margin.left - margin.right;
@@ -976,20 +876,6 @@ function getMax(selectedData) {
     return max
 }
 
-d3.select("#year").on("change", function(){
-    const t = d3.transition().duration(400);
-
-    year = $(this).val();
-
-    selectedData = removeGeoAreasWithNoData(sortData(data[year]));
-
-    yScale.domain(selectedData.map(yAccessor));
-    drawXAxis(svg, selectedData);
-    drawYAxis(svg, selectedData, t);
-    drawBars(svg, selectedData, t);
-    drawMap(year);
-});
-
 fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/src/data/areabycrime.csv')
 .then((res) => res.text())
 .then((res) => {
@@ -1019,3 +905,44 @@ fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in
             return d;
         });
 });
+
+
+//Slider stuff
+var dataTime = d3.range(0, 8).map(function(d) {
+    return new Date(2010 + d, 10, 3);
+});
+
+var sliderTime = d3
+    .sliderBottom()
+    .min(d3.min(dataTime))
+    .max(d3.max(dataTime))
+    .step(1000 * 60 * 60 * 24 * 365)
+    .width(300)
+    .tickFormat(d3.timeFormat('%Y'))
+    .tickValues(dataTime)
+    .default(new Date(1998, 10, 3))
+    .on('onchange', val => {
+        year = d3.timeFormat('%Y')(val)
+        d3.select('#value-time').text(d3.timeFormat('%Y')(val));
+
+        const t = d3.transition().duration(150);
+        selectedData = removeGeoAreasWithNoData(sortData(data[year]));
+
+        yScale.domain(selectedData.map(yAccessor));
+        drawXAxis(svg, selectedData);
+        drawYAxis(svg, selectedData, t);
+        drawBars(svg, selectedData, t);
+        drawMap(year);
+});
+
+var gTime = d3
+    .select('div#slider-time')
+    .append('svg')
+    .attr('width', 500)
+    .attr('height', 100)
+    .append('g')
+    .attr('transform', 'translate(30,30)')
+
+gTime.call(sliderTime);
+
+d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));
