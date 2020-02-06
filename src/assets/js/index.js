@@ -814,29 +814,12 @@ var sliderTime = d3
 
         const t = d3.transition().duration(150);
         selectedData = removeGeoAreasWithNoData(sortData(data[year]));
-
-<<<<<<< HEAD
-        // overAllMinVal = getMin(selectedData)
-        // overAllMaxVal = getMax(selectedData)
-        // setXBoundaries(null)
-
-        // console.log("overAllMinVal = " + overAllMinVal);
-        // console.log("overAllMaxVal = " + overAllMaxVal);
-
         yScale.domain(selectedData.map(yAccessor));
         drawXAxis(svg, selectedData);
         drawYAxis(svg, selectedData, t);
         drawBars(svg, selectedData, t);
         drawMap(year);
-});
-=======
-            yScale.domain(selectedData.map(yAccessor));
-            drawXAxis(svg, selectedData);
-            drawYAxis(svg, selectedData, t);
-            drawBars(svg, selectedData, t);
-            drawMap(year);
-        });
->>>>>>> 92162a7b98b76449067aeaaa8951356b2d2a8a00
+    });
 
 var gTime = d3
     .select('div#slider-time')
