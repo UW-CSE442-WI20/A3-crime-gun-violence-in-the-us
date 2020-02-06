@@ -898,18 +898,18 @@ fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in
     // play button for year slider
     playButton
         .on("click", function() {
-        var button = d3.select(this);
-        if (button.text() == "Pause") {
-        moving = false;
-        clearInterval(timer);
-        // timer = 0;
-        button.text("Play");
-        } else {
-        moving = true;
-        timer = setInterval(step, 400);
-        button.text("Pause");
-        }
-        console.log("Slider moving: " + moving);
+            var button = d3.select(this);
+            if (button.text() == "Pause") {
+            moving = false;
+            clearInterval(timer);
+            // timer = 0;
+            button.text("Play");
+            } else {
+            moving = true;
+            timer = setInterval(step, 400);
+            button.text("Pause");
+            }
+            console.log("Slider moving: " + moving);
     })
 
     d3.select("#year").selectAll("option")
@@ -922,6 +922,36 @@ fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in
             return d;
         });
 });
+
+// Play button stuff
+d3.select('#play-button').on('click', () => {
+    var currentYear = +year
+
+    const interval = d3.interval(() => {
+        currentYear += 1
+        if (currentYear <= 2017) {
+            updateCharts(currentYear)
+        } else if (currentYear === 2018) {
+            updateCharts(year)
+        } else {
+            interval.stop();
+        }
+    }, 1000);
+})
+
+function updateCharts(givenYear){
+    const t = d3.transition().duration(200);
+    // Update the text time
+    d3.select('#value-time').text(givenYear);
+
+    selectedData = removeCrimeTypesWithNoData(sortData(data[givenYear]));
+
+    yScale.domain(selectedData.map(yAccessor));
+    drawXAxis(svg, selectedData);
+    drawYAxis(svg, selectedData, t);
+    drawBars(svg, selectedData, t);
+    drawMap(givenYear);
+}
 
 
 //Slider stuff
@@ -937,20 +967,20 @@ var sliderTime = d3
     .width(300)
     .tickFormat(d3.timeFormat('%Y'))
     .tickValues(dataTime)
-    .default(new Date(1998, 10, 3))
+    .default(new Date(2010, 10, 3))
     .on('onchange', val => {
-        year = d3.timeFormat('%Y')(val)
+        year = +(d3.timeFormat('%Y')(val))
         d3.select('#value-time').text(d3.timeFormat('%Y')(val));
 
         const t = d3.transition().duration(150);
         selectedData = removeGeoAreasWithNoData(sortData(data[year]));
 
-        yScale.domain(selectedData.map(yAccessor));
-        drawXAxis(svg, selectedData);
-        drawYAxis(svg, selectedData, t);
-        drawBars(svg, selectedData, t);
-        drawMap(year);
-});
+            yScale.domain(selectedData.map(yAccessor));
+            drawXAxis(svg, selectedData);
+            drawYAxis(svg, selectedData, t);
+            drawBars(svg, selectedData, t);
+            drawMap(year);
+        });
 
 var gTime = d3
     .select('div#slider-time')
