@@ -299,6 +299,186 @@ var lapd_divisions = {
     ]
 };
 
+// var dataArray = [];
+
+// for (var i = 0; i < lapd_divisions.features.length; i++) {
+//     var division_id = lapd_divisions.features[i].properties.external_id;
+//     dataArray.push(division_id)
+
+//     console.log("Division Id " + division_id)
+//     // Join GeoJSON on police district to other datasets here 
+
+// }
+
+// // Width and height
+// var margin = { top: 20, right: 10, bottom: 40, left: 250 };
+// var w = 900 - margin.left - margin.right;
+// var h = 700 - margin.top - margin.bottom;
+
+// var laLatitude = 34.05223;
+// var laLongitude = 118.24368;
+
+// // Define map projection
+// var projection = d3.geoAlbers()
+//     .translate([w / 2, h / 2])
+//     .scale([50000])
+//     .center([0, laLatitude])
+//     .rotate([laLongitude, 0]);
+
+// // Define path generator
+// var path = d3.geoPath()
+//     .projection(projection);
+
+// // Create SVG element
+// var svg = d3.select(".map-chart")
+//     .append("svg")
+//     .attr("width", w)
+//     .attr("height", h);
+
+
+// // heat map
+// var minVal = d3.min(dataArray)
+// var maxVal = d3.max(dataArray)
+// var lowColor = '#f9f9f9'
+// var highColor = '#bc2a66'
+
+// var ramp = d3.scaleLinear().domain([minVal, maxVal]).range([lowColor, highColor])
+
+// // // var ramp = d3.scaleQuantize([minVal, maxVal], d3.schemeYlOrRd[])
+
+// function filterYear(d) {
+//     return d.year === 2010;
+// }
+
+// d3.csv("A3-crime-gun-violence-in-the-us/src/data/areabyyear.csv", function(d) {
+//     console.log(d[0]);
+// });
+
+// // mouseover tooltip
+// var tooltip = d3.select("div.tooltip");
+
+// // Bind data and create one path per GeoJSON feature
+// svg.selectAll("path")
+//     .data(lapd_divisions.features)
+//     .enter()
+//     .append("path")
+//     .attr("d", path)
+//     .attr("class", "district")
+//     .attr("id", function (d) {
+//         console.log("external id  " + d.properties.external_id)
+//         return d.properties.external_id;
+//     })
+//     .style("stroke", "#fff")
+//     .style("stroke-width", "1")
+//     .style("fill", function (d) {
+//         return ramp(d.properties.external_id)
+//     })
+//     .on("mouseover", handleMouseOver)
+//     .on("mouseout", handleMouseOut)
+//     .on("mousemove", handleMouseMove)
+//     .on("click", handleClick);
+
+
+// // legend
+// // add a legend
+// // add a legend
+// var w = 140, h = 400;
+
+// var key = d3.select(".map-chart")
+//     .append("svg")
+//     .attr("width", w)
+//     .attr("height", h + 300 )
+//     .attr("class", "legend");
+
+// var legend = key.append("defs")
+//     .append("svg:linearGradient")
+//     .attr("id", "gradient")
+//     .attr("x1", "100%")
+//     .attr("y1", "0%")
+//     .attr("x2", "100%")
+//     .attr("y2", "100%")
+//     .attr("spreadMethod", "pad");
+
+// legend.append("stop")
+//     .attr("offset", "0%")
+//     .attr("stop-color", highColor)
+//     .attr("stop-opacity", 1);
+
+// legend.append("stop")
+//     .attr("offset", "100%")
+//     .attr("stop-color", lowColor)
+//     .attr("stop-opacity", 1);
+
+// key.append("rect")
+//     .attr("width", w - 120)
+//     .attr("height", h)
+//     .style("fill", "url(#gradient)")
+//     .attr("transform", "translate(10,280)");
+
+// var y = d3.scaleLinear()
+//     .range([h, 0])
+//     .domain([minVal, maxVal]);
+
+// var yAxis = d3.axisRight(y);
+
+// key.append("g")
+//     .attr("class", "y axis")
+//     .attr("transform", "translate(40,280)")
+//     .call(yAxis);
+
+// // helper function
+
+function handleMouseOver(d, i) {
+    // Use D3 to select element, change color and size
+    d3.select("p").text("District " + this.id);
+    // d3.select(this).style("fill", "blue");
+    d3.select(this)
+        .style("fill", "black");
+    console.log("Division:  " + d.properties.name)
+    return tooltip.style("hidden", false).html(d.properties.name);
+}
+
+function handleMouseMove(d) {
+    tooltip.classed("hidden", false)
+        .style("top", (d3.event.pageY) + "px")
+        .style("left", (d3.event.pageX + 10) + "px")
+        .html(d.properties.name);
+}
+
+function handleMouseOut(d, i) {
+    // Use D3 to select element, change color and size
+    //console.log("mouse", this);
+    d3.select(this)
+        .style("fill", function (d) {
+            return ramp(d.properties.external_id)
+        });
+    tooltip.classed("hidden", true);
+}
+
+function handleClick(d, i) {
+    // Use D3 to perform action on click event
+    clearAll();
+    d3.select(this)
+        .style("stroke", "black")
+        .style("fill", "black")
+        .style("stroke-width", "2px");
+    d3.select("div.distric-Name")
+        .style("font-size", "24px")
+        .text(d.properties.name);
+
+    console.log("Division:  " + d.properties.name)
+}
+
+// function clearAll() {
+//     d3.select("div.distric-Name")
+//         .text("");
+//     tooltip.html("");
+//     d3.selectAll("path")
+//         .style("stroke-width", "1px")
+//         .style("stroke", "white");
+// }
+
+
 let startYear = 2010;
 let selectYear = startYear;
 
@@ -364,6 +544,10 @@ function drawMap(selectYear) {
             var ramp = d3.scaleLinear().domain([minVal, maxVal]).range([lowColor, highColor])
 
             // // var ramp = d3.scaleQuantize([minVal, maxVal], d3.schemeYlOrRd[])
+
+            // clear button
+            var clear = d3.select("#clear-button")
+                .on("click", clearAll);
 
             // mouseover tooltip
             var tooltip = d3.select("div.tooltip");
@@ -435,8 +619,6 @@ function drawMap(selectYear) {
                 .attr("transform", "translate(40,280)")
                 .call(yAxis);
 
-            // helper function
-
             function handleMouseOver(d, i) {
                 // Use D3 to select element, change color and size
                 d3.select("p").text("District " + this.id);
@@ -444,7 +626,6 @@ function drawMap(selectYear) {
                 d3.select(this)
                     .style("fill", "black");
                 console.log("Division:  " + d.properties.name)
-                console.log("Total Crime: " + totalCrime[d.properties.Area_ID])
                 return tooltip.style("hidden", false).html(d.properties.name);
             }
 
@@ -467,17 +648,27 @@ function drawMap(selectYear) {
 
             function handleClick(d, i) {
                 // Use D3 to perform action on click event
+                clearAll();
                 d3.select(this)
                     .style("stroke", "black")
                     .style("fill", "black")
                     .style("stroke-width", "2px");
-
                 d3.select("div.distric-Name")
                     .style("font-size", "24px")
                     .text(d.properties.name);
 
                 console.log("Division:  " + d.properties.name)
             }
+
+            function clearAll() {
+                d3.select("div.distric-Name")
+                    .text("");
+                tooltip.html("");
+                d3.selectAll("path")
+                    .style("stroke-width", "1px")
+                    .style("stroke", "white");
+            }
+
 
         });
 
