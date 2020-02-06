@@ -511,15 +511,15 @@ function drawMap(selectYear) {
                 console.log("total " + i + " " + totalCrime[i])
             }
             // heat map
-            minVal = d3.min(totalCrime)
-            maxVal = d3.max(totalCrime)
+            minVal = 5000
+            maxVal = 15000
             console.log("min " + minVal)
             console.log("max " + maxVal)
 
             // Width and height
-            var margin_map = { top: 20, right: 10, bottom: 40, left: 250 };
+            var margin_map = { top: 20, right: 10, bottom: 40, left: 50 };
             var w = 900 - margin_map.left - margin_map.right;
-            var h = 700 - margin_map.top - margin_map.bottom;
+            var h = 1000 - margin_map.top - margin_map.bottom;
 
             var laLatitude = 34.05223;
             var laLongitude = 118.24368;
@@ -527,7 +527,7 @@ function drawMap(selectYear) {
             // Define map projection
             var projection = d3.geoAlbers()
                 .translate([w / 2, h / 2])
-                .scale([50000])
+                .scale([60000])
                 .center([0, laLatitude])
                 .rotate([laLongitude, 0]);
 
@@ -581,7 +581,7 @@ function drawMap(selectYear) {
             // add a legend
             // add a legend
 
-            var w = 140, h = 400;
+            var w = 140, h = 500;
             
             var legendToRemove = d3.select('.legend')
             legendToRemove.remove()
@@ -589,7 +589,7 @@ function drawMap(selectYear) {
             var key = d3.select(".map-chart")
                 .append("svg")
                 .attr("width", w)
-                .attr("height", h + 300)
+                .attr("height", h + 1000)
                 .attr("class", "legend");
 
             var legend = key.append("defs")
@@ -615,7 +615,7 @@ function drawMap(selectYear) {
                 .attr("width", w - 120)
                 .attr("height", h)
                 .style("fill", "url(#gradient)")
-                .attr("transform", "translate(10,280)");
+                .attr("transform", "translate(10,400)");
 
             var y = d3.scaleLinear().range([h, 0]).domain([minVal, maxVal]);
 
@@ -623,7 +623,7 @@ function drawMap(selectYear) {
 
             key.append("g")
                 .attr("class", "y axis")
-                .attr("transform", "translate(40,280)")
+                .attr("transform", "translate(40,400)")
                 .call(yAxis);
 
             function handleMouseOver(d, i) {
@@ -648,7 +648,7 @@ function drawMap(selectYear) {
                 //console.log("mouse", this);
                 d3.select(this)
                     .style("fill", function (d) {
-                        return ramp(d.properties.external_id)
+                        return ramp(totalCrime[d.properties.external_id])
                     });
                 tooltip.classed("hidden", true);
             }
@@ -683,7 +683,7 @@ function drawMap(selectYear) {
                 d3.select("div.distric-Name")
                     .text("");
                 tooltip.html("");
-                d3.selectAll("path")
+                d3.selectAll(".district")
                     .style("stroke-width", "1px")
                     .style("stroke", "white");
 
@@ -893,7 +893,24 @@ fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in
     drawXAxis(svg, selectedData);
     drawYAxis(svg, selectedData);
     drawBars(svg, selectedData);
-    drawMap(selectYear)
+    drawMap(selectYear);
+
+    // play button for year slider
+    playButton
+        .on("click", function() {
+        var button = d3.select(this);
+        if (button.text() == "Pause") {
+        moving = false;
+        clearInterval(timer);
+        // timer = 0;
+        button.text("Play");
+        } else {
+        moving = true;
+        timer = setInterval(step, 400);
+        button.text("Pause");
+        }
+        console.log("Slider moving: " + moving);
+    })
 
     d3.select("#year").selectAll("option")
 		.data(years)
