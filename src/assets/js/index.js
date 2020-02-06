@@ -718,23 +718,6 @@ fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in
     drawBars(svg, selectedData);
     drawMap(selectYear);
 
-    // play button for year slider
-    playButton
-        .on("click", function() {
-            var button = d3.select(this);
-            if (button.text() == "Pause") {
-            moving = false;
-            clearInterval(timer);
-            // timer = 0;
-            button.text("Play");
-            } else {
-            moving = true;
-            timer = setInterval(step, 400);
-            button.text("Pause");
-            }
-            console.log("Slider moving: " + moving);
-    })
-
     d3.select("#year").selectAll("option")
 		.data(years)
 	    .enter().append("option")
@@ -787,7 +770,7 @@ var sliderTime = d3
     .min(d3.min(dataTime))
     .max(d3.max(dataTime))
     .step(1000 * 60 * 60 * 24 * 365)
-    .width(300)
+    .width(450)
     .tickFormat(d3.timeFormat('%Y'))
     .tickValues(dataTime)
     .default(new Date(2010, 10, 3))
