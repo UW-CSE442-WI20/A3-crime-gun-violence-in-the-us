@@ -511,15 +511,15 @@ function drawMap(selectYear) {
                 console.log("total " + i + " " + totalCrime[i])
             }
             // heat map
-            minVal = d3.min(totalCrime)
-            maxVal = d3.max(totalCrime)
+            minVal = 5000
+            maxVal = 15000
             console.log("min " + minVal)
             console.log("max " + maxVal)
 
             // Width and height
-            var margin_map = { top: 20, right: 10, bottom: 40, left: 250 };
+            var margin_map = { top: 20, right: 10, bottom: 40, left: 50 };
             var w = 900 - margin_map.left - margin_map.right;
-            var h = 700 - margin_map.top - margin_map.bottom;
+            var h = 1000 - margin_map.top - margin_map.bottom;
 
             var laLatitude = 34.05223;
             var laLongitude = 118.24368;
@@ -527,7 +527,7 @@ function drawMap(selectYear) {
             // Define map projection
             var projection = d3.geoAlbers()
                 .translate([w / 2, h / 2])
-                .scale([50000])
+                .scale([60000])
                 .center([0, laLatitude])
                 .rotate([laLongitude, 0]);
 
@@ -581,7 +581,7 @@ function drawMap(selectYear) {
             // add a legend
             // add a legend
 
-            var w = 140, h = 400;
+            var w = 140, h = 500;
             
             var legendToRemove = d3.select('.legend')
             legendToRemove.remove()
@@ -589,7 +589,7 @@ function drawMap(selectYear) {
             var key = d3.select(".map-chart")
                 .append("svg")
                 .attr("width", w)
-                .attr("height", h + 300)
+                .attr("height", h + 1000)
                 .attr("class", "legend");
 
             var legend = key.append("defs")
@@ -615,7 +615,7 @@ function drawMap(selectYear) {
                 .attr("width", w - 120)
                 .attr("height", h)
                 .style("fill", "url(#gradient)")
-                .attr("transform", "translate(10,280)");
+                .attr("transform", "translate(10,400)");
 
             var y = d3.scaleLinear().range([h, 0]).domain([minVal, maxVal]);
 
@@ -623,7 +623,7 @@ function drawMap(selectYear) {
 
             key.append("g")
                 .attr("class", "y axis")
-                .attr("transform", "translate(40,280)")
+                .attr("transform", "translate(40,400)")
                 .call(yAxis);
 
             function handleMouseOver(d, i) {
@@ -648,7 +648,7 @@ function drawMap(selectYear) {
                 //console.log("mouse", this);
                 d3.select(this)
                     .style("fill", function (d) {
-                        return ramp(d.properties.external_id)
+                        return ramp(totalCrime[d.properties.external_id])
                     });
                 tooltip.classed("hidden", true);
             }
@@ -705,116 +705,7 @@ function drawMap(selectYear) {
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // LAPD division : http://geohub.lacity.org/datasets/lapd-divisions/data?geometry=-119.399%2C33.821%2C-117.421%2C34.220&orderBy=PREC
 
-////////// slider //////////
-var formatDateIntoYear = d3.timeFormat("%Y");
-var formatDate = d3.timeFormat("%Y");
-var parseDate = d3.timeParse("%y");
-
-var startDate = new Date("2010-01-01"),
-    endDate = new Date("2017-12-01");
-
-var margin = {top: 20, right: 30, bottom: 10, left: 50},
-    width = 650 - margin.left - margin.right,
-    height = 250 - margin.top - margin.bottom;
-
-var svg = d3.select("#vis")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);  
-
-// slider
-var moving = false;
-var currentValue = 0;
-var targetValue = width;
-
-var playButton = d3.select("#play-button");
-    
-var x = d3.scaleTime()
-    .domain([startDate, endDate])
-    .range([0, targetValue])
-    .clamp(true);
-
-var slider = svg.append("g")
-    .attr("class", "slider")
-    .attr("transform", "translate(" + margin.left + "," + height/5 + ")");
-
-slider.append("line")
-    .attr("class", "track")
-    .attr("x1", x.range()[0])
-    .attr("x2", x.range()[1])
-  .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-    .attr("class", "track-inset")
-  .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-    .attr("class", "track-overlay")
-    .call(d3.drag()
-        .on("start.interrupt", function() { slider.interrupt(); })
-        .on("start drag", function() {
-          currentValue = d3.event.x;
-          update(x.invert(currentValue)); 
-        })
-    );
-
-slider.insert("g", ".track-overlay")
-    .attr("class", "ticks")
-    .attr("transform", "translate(0," + 18 + ")")
-  .selectAll("text")
-    .data(x.ticks(10))
-    .enter()
-    .append("text")
-    .attr("x", x)
-    .attr("y", 10)
-    .attr("text-anchor", "middle")
-    .text(function(d) { return formatDateIntoYear(d); });
-
-var handle = slider.insert("circle", ".track-overlay")
-    .attr("class", "handle")
-    .attr("r", 9);
-
-var label = slider.append("text")  
-    .attr("class", "label")
-    .attr("text-anchor", "middle")
-    .text(formatDate(startDate))
-    .attr("transform", "translate(0," + (-25) + ")")
-
-function step() {
-    update(x.invert(currentValue));
-    // currentValue = currentValue + (targetValue/151);
-    // if (currentValue > targetValue) {
-    //   moving = false;
-    //   currentValue = 0;
-    //   clearInterval(timer);
-    //   // timer = 0;
-    //   playButton.text("Play");
-    //   console.log("Slider moving: " + moving);
-    // }
-}
-
-function update(h) {
-    // update position and text of label according to slider scale
-    handle.attr("cx", x(h));
-    label
-      .attr("x", x(h))
-      .text(formatDate(h));
-  
-    // filter data set and redraw plot
-    // add bar stuff
-    const t = d3.transition().duration(400);
-
-    selectedData = prepareData(rawData)
-        .filter(function(d) {
-            return d[year] == formatDate(h);
-        })
-    // selectedData = removeGeoAreasWithNoData(sortData(data[year]));
-
-    yScale.domain(selectedData.map(yAccessor));
-    drawXAxis(svg, selectedData);
-    drawYAxis(svg, selectedData, t);
-    drawBars(svg, selectedData, t);
-}
-////////// slider ends //////////
-
-
-// bar-chart
+// Bar-chart stuff
 
 var margin = {top: 20, right: 30, bottom: 40, left: 260};
 var width = 650 - margin.left - margin.right;
@@ -985,20 +876,6 @@ function getMax(selectedData) {
     return max
 }
 
-d3.select("#year").on("change", function(){
-    const t = d3.transition().duration(400);
-
-    year = $(this).val();
-
-    selectedData = removeGeoAreasWithNoData(sortData(data[year]));
-
-    yScale.domain(selectedData.map(yAccessor));
-    drawXAxis(svg, selectedData);
-    drawYAxis(svg, selectedData, t);
-    drawBars(svg, selectedData, t);
-    drawMap(year);
-});
-
 fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/src/data/areabycrime.csv')
 .then((res) => res.text())
 .then((res) => {
@@ -1045,3 +922,44 @@ fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in
             return d;
         });
 });
+
+
+//Slider stuff
+var dataTime = d3.range(0, 8).map(function(d) {
+    return new Date(2010 + d, 10, 3);
+});
+
+var sliderTime = d3
+    .sliderBottom()
+    .min(d3.min(dataTime))
+    .max(d3.max(dataTime))
+    .step(1000 * 60 * 60 * 24 * 365)
+    .width(300)
+    .tickFormat(d3.timeFormat('%Y'))
+    .tickValues(dataTime)
+    .default(new Date(1998, 10, 3))
+    .on('onchange', val => {
+        year = d3.timeFormat('%Y')(val)
+        d3.select('#value-time').text(d3.timeFormat('%Y')(val));
+
+        const t = d3.transition().duration(150);
+        selectedData = removeGeoAreasWithNoData(sortData(data[year]));
+
+        yScale.domain(selectedData.map(yAccessor));
+        drawXAxis(svg, selectedData);
+        drawYAxis(svg, selectedData, t);
+        drawBars(svg, selectedData, t);
+        drawMap(year);
+});
+
+var gTime = d3
+    .select('div#slider-time')
+    .append('svg')
+    .attr('width', 500)
+    .attr('height', 100)
+    .append('g')
+    .attr('transform', 'translate(30,30)')
+
+gTime.call(sliderTime);
+
+d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));

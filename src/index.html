@@ -14,6 +14,7 @@
 		<link rel="stylesheet" type="text/css" href="assets/css/map-tooltip.css">
 		<link rel="stylesheet" type="text/css" href="assets/css/yearslider.css">
 		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<script src="https://unpkg.com/d3-simple-slider"></script>
 	</head>
 	<body class="landing">
 
@@ -75,10 +76,15 @@
 							<!-- Bar Chart -->
 							<div class="7u 12u$(xsmall)">
 								<div class="image fit captioned">
-									<div id="vis">
+									<!-- <div id="vis">
 										<button id="play-button">Play</button>
-									</div>
-									<h3>Choose year:<select id="year"></select></h3>
+									</div> -->
+									
+									<h3>Choose year:
+										<div><p id="value-time"></p></div>
+										<div><div id="slider-time"></div></div>
+										<!--<select id="year"></select>-->
+									</h3>
 									<!-- <h3 class="chart-title">Year <span class="year"></span></h3> -->
 									<div class="chart"></div>
 									<!-- <div class="myRec"></div> -->
