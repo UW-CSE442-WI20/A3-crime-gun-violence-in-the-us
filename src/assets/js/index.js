@@ -334,9 +334,9 @@ function drawMap(selectYear) {
             console.log("max " + maxVal)
 
             // Width and height
-            var margin_map = { top: 20, right: 10, bottom: 40, left: 50 };
+            var margin_map = {right: 10, left: 50 };
             var w = 900 - margin_map.left - margin_map.right;
-            var h = 1000 - margin_map.top - margin_map.bottom;
+            var h = 660;
 
             var laLatitude = 34.05223;
             var laLongitude = 118.24368;
@@ -393,7 +393,7 @@ function drawMap(selectYear) {
                 .on("mouseout", handleMouseOut)
                 .on("mousemove", handleMouseMove)
                 .on("click", handleClick);
-
+        
             // legend
             // add a legend
             // add a legend
@@ -432,7 +432,7 @@ function drawMap(selectYear) {
                 .attr("width", w - 120)
                 .attr("height", h)
                 .style("fill", "url(#gradient)")
-                .attr("transform", "translate(10,450)");
+                .attr("transform", "translate(10,280)");
 
             var y = d3.scaleLinear().range([h, 0]).domain([minVal, maxVal]);
 
@@ -440,8 +440,16 @@ function drawMap(selectYear) {
 
             key.append("g")
                 .attr("class", "y axis")
-                .attr("transform", "translate(40,450)")
+                .attr("transform", "translate(40,280)")
                 .call(yAxis);
+
+            // text label for the y axis
+            key.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("transform", "translate(40,270)")
+                .style("text-anchor", "middle")
+                .style("font-size", "10px")
+                .text("Number of crime");    
 
             function handleMouseOver(d, i) {
                 // Use D3 to select element, change color and size
@@ -450,7 +458,7 @@ function drawMap(selectYear) {
                 d3.select(this)
                     .style("fill", "black");
                 console.log("Division:  " + d.properties.name)
-                return tooltip.style("hidden", false).html(d.properties.name + "<br>total: " + totalCrime[d.properties.external_id]);
+                return tooltip.style("hidden", false).html(d.properties.name + "<br># crime: " + totalCrime[d.properties.external_id]);
             }
 
             function handleMouseMove(d) {
@@ -477,8 +485,9 @@ function drawMap(selectYear) {
                     .style("stroke", "black")
                     .style("fill", "black")
                     .style("stroke-width", "2px");
-                d3.select("div.distric-Name")
-                    .style("font-size", "24px")
+                
+                d3.select(".div-name")
+                    .style("font-size", "42px")
                     .text(d.properties.name);
 
                 console.log("Division:  " + d.properties.name)
@@ -497,8 +506,8 @@ function drawMap(selectYear) {
             }
 
             function clearAll() {
-                d3.select("div.distric-Name")
-                    .text("");
+                d3.select(".div-name")
+                    .text("Los Angeles");
                 tooltip.html("");
                 d3.selectAll(".district")
                     .style("stroke-width", "1px")
@@ -729,18 +738,18 @@ fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in
     // play button for year slider
     playButton
         .on("click", function() {
-        var button = d3.select(this);
-        if (button.text() == "Pause") {
-        moving = false;
-        clearInterval(timer);
-        // timer = 0;
-        button.text("Play");
-        } else {
-        moving = true;
-        timer = setInterval(step, 400);
-        button.text("Pause");
-        }
-        console.log("Slider moving: " + moving);
+            var button = d3.select(this);
+            if (button.text() == "Pause") {
+            moving = false;
+            clearInterval(timer);
+            // timer = 0;
+            button.text("Play");
+            } else {
+            moving = true;
+            timer = setInterval(step, 400);
+            button.text("Pause");
+            }
+            console.log("Slider moving: " + moving);
     })
 
     d3.select("#year").selectAll("option")
@@ -753,6 +762,36 @@ fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in
             return d;
         });
 });
+
+// Play button stuff
+d3.select('#play-button').on('click', () => {
+    var currentYear = +year
+
+    const interval = d3.interval(() => {
+        currentYear += 1
+        if (currentYear <= 2017) {
+            updateCharts(currentYear)
+        } else if (currentYear === 2018) {
+            updateCharts(year)
+        } else {
+            interval.stop();
+        }
+    }, 1000);
+})
+
+function updateCharts(givenYear){
+    const t = d3.transition().duration(200);
+    // Update the text time
+    d3.select('#value-time').text(givenYear);
+
+    selectedData = removeCrimeTypesWithNoData(sortData(data[givenYear]));
+
+    yScale.domain(selectedData.map(yAccessor));
+    drawXAxis(svg, selectedData);
+    drawYAxis(svg, selectedData, t);
+    drawBars(svg, selectedData, t);
+    drawMap(givenYear);
+}
 
 
 //Slider stuff
@@ -768,14 +807,15 @@ var sliderTime = d3
     .width(300)
     .tickFormat(d3.timeFormat('%Y'))
     .tickValues(dataTime)
-    .default(new Date(1998, 10, 3))
+    .default(new Date(2010, 10, 3))
     .on('onchange', val => {
-        year = d3.timeFormat('%Y')(val)
+        year = +(d3.timeFormat('%Y')(val))
         d3.select('#value-time').text(d3.timeFormat('%Y')(val));
 
         const t = d3.transition().duration(150);
         selectedData = removeGeoAreasWithNoData(sortData(data[year]));
 
+<<<<<<< HEAD
         // overAllMinVal = getMin(selectedData)
         // overAllMaxVal = getMax(selectedData)
         // setXBoundaries(null)
@@ -789,6 +829,14 @@ var sliderTime = d3
         drawBars(svg, selectedData, t);
         drawMap(year);
 });
+=======
+            yScale.domain(selectedData.map(yAccessor));
+            drawXAxis(svg, selectedData);
+            drawYAxis(svg, selectedData, t);
+            drawBars(svg, selectedData, t);
+            drawMap(year);
+        });
+>>>>>>> 92162a7b98b76449067aeaaa8951356b2d2a8a00
 
 var gTime = d3
     .select('div#slider-time')
