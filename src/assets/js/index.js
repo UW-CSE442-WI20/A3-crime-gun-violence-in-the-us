@@ -370,7 +370,7 @@ function drawMap(selectYear) {
                 .on("click", clearAll);
 
             // mouseover tooltip
-            var tooltip = d3.select("div.tooltip");
+            var tooltip = d3.select("div.maptooltip");
 
             // Bind data and create one path per GeoJSON feature
             mapSvg.selectAll("path")
@@ -644,11 +644,11 @@ function drawBars(el, data, t) {
 
     var xScale = getXScale(0, maxVal + (maxVal/4))
 
+    var divTooltip = d3.select("div.bartooltip")
+
     var bars = barsG
         .selectAll('.bar')
         .data(data, yAccessor)
-
-    var bartoolTip = d3.select("div.bartoolTip");
 
     bars.exit()
         .remove();
@@ -656,23 +656,31 @@ function drawBars(el, data, t) {
         .append('rect')
         .attr('class', d => d.crimeType === 'WLD' ? 'bar wld' : 'bar')
         .attr('x', leftPadding)
-        .merge(bars).transition(t)
         .attr('y', d => yScale(yAccessor(d)))
         .attr('width', d => xScale(xAccessor(d)))
         .attr('height', yScale.bandwidth())
         .style('fill', function(d, i) {
             return colorScale(d.crimeType); })
-        .delay(delay);
-    
-    bars.on("mousemove", function(d){
-        bartoolTip
-          .style("left", d3.event.pageX - 50 + "px")
-          .style("top", d3.event.pageY - 70 + "px")
-          .style("display", "inline-block")
-          .html((d.area) + "<br>" + "£" + (d.value));
-    })
-        .on("mouseout", function(d){ bartoolTip.style("display", "none");});
-
+        .on("mousemove", function(d) {
+            divTooltip.classed("hidden", false)
+                    .style("top", (d3.event.pageY) + "px")
+                    .style("left", (d3.event.pageX + 10) + "px")
+                    .html(d.crimeType + "<br>Total: " + d.value);
+        })
+        .on("mouseover", function(d) {
+            d3.select(this)
+                .style("stroke", "Black")
+                .style("stroke-width", "1.8px")
+                .style("stroke-opacity", "1")
+            return divTooltip.style("hidden", false).html(d.crimeType + "<br>Total: " + d.value);
+        })
+        .on("mouseout", function(d) {
+            divTooltip.classed("hidden", true);
+            d3.select(this).transition().duration(250)
+                .style("stroke-opacity", "0");
+        })
+        .merge(bars).transition(t)
+        .delay(delay)
 }
 
 var svg = d3.select('.chart').append('svg')
