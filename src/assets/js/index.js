@@ -648,6 +648,8 @@ function drawBars(el, data, t) {
         .selectAll('.bar')
         .data(data, yAccessor)
 
+    var bartoolTip = d3.select("div.bartoolTip");
+
     bars.exit()
         .remove();
     bars.enter()
@@ -661,6 +663,16 @@ function drawBars(el, data, t) {
         .style('fill', function(d, i) {
             return colorScale(d.crimeType); })
         .delay(delay);
+    
+    bars.on("mousemove", function(d){
+        bartoolTip
+          .style("left", d3.event.pageX - 50 + "px")
+          .style("top", d3.event.pageY - 70 + "px")
+          .style("display", "inline-block")
+          .html((d.area) + "<br>" + "£" + (d.value));
+    })
+        .on("mouseout", function(d){ bartoolTip.style("display", "none");});
+
 }
 
 var svg = d3.select('.chart').append('svg')
