@@ -334,9 +334,9 @@ function drawMap(selectYear) {
             console.log("max " + maxVal)
 
             // Width and height
-            var margin_map = { top: 20, right: 10, bottom: 40, left: 50 };
+            var margin_map = {right: 10, left: 50 };
             var w = 900 - margin_map.left - margin_map.right;
-            var h = 1000 - margin_map.top - margin_map.bottom;
+            var h = 660;
 
             var laLatitude = 34.05223;
             var laLongitude = 118.24368;
@@ -393,7 +393,7 @@ function drawMap(selectYear) {
                 .on("mouseout", handleMouseOut)
                 .on("mousemove", handleMouseMove)
                 .on("click", handleClick);
-
+        
             // legend
             // add a legend
             // add a legend
@@ -432,7 +432,7 @@ function drawMap(selectYear) {
                 .attr("width", w - 120)
                 .attr("height", h)
                 .style("fill", "url(#gradient)")
-                .attr("transform", "translate(10,430)");
+                .attr("transform", "translate(10,280)");
 
             var y = d3.scaleLinear().range([h, 0]).domain([minVal, maxVal]);
 
@@ -440,8 +440,16 @@ function drawMap(selectYear) {
 
             key.append("g")
                 .attr("class", "y axis")
-                .attr("transform", "translate(40,430)")
+                .attr("transform", "translate(40,280)")
                 .call(yAxis);
+
+            // text label for the y axis
+            key.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("transform", "translate(40,270)")
+                .style("text-anchor", "middle")
+                .style("font-size", "10px")
+                .text("Number of crime");    
 
             function handleMouseOver(d, i) {
                 // Use D3 to select element, change color and size
@@ -450,14 +458,14 @@ function drawMap(selectYear) {
                 d3.select(this)
                     .style("fill", "black");
                 console.log("Division:  " + d.properties.name)
-                return tooltip.style("hidden", false).html(d.properties.name + "<br>total: " + totalCrime[d.properties.external_id]);
+                return tooltip.style("hidden", false).html(d.properties.name + "<br># crime: " + totalCrime[d.properties.external_id]);
             }
 
             function handleMouseMove(d) {
                 tooltip.classed("hidden", false)
                     .style("top", (d3.event.pageY) + "px")
                     .style("left", (d3.event.pageX + 10) + "px")
-                    .html(d.properties.name + "<br>total: " +totalCrime[d.properties.external_id]);
+                    .html(d.properties.name + "<br># crime: " +totalCrime[d.properties.external_id]);
             }
 
             function handleMouseOut(d, i) {
@@ -477,8 +485,9 @@ function drawMap(selectYear) {
                     .style("stroke", "black")
                     .style("fill", "black")
                     .style("stroke-width", "2px");
-                d3.select("div.distric-Name")
-                    .style("font-size", "24px")
+                
+                d3.select(".div-name")
+                    .style("font-size", "42px")
                     .text(d.properties.name);
 
                 console.log("Division:  " + d.properties.name)
@@ -497,8 +506,8 @@ function drawMap(selectYear) {
             }
 
             function clearAll() {
-                d3.select("div.distric-Name")
-                    .text("");
+                d3.select(".div-name")
+                    .text("Los Angeles");
                 tooltip.html("");
                 d3.selectAll(".district")
                     .style("stroke-width", "1px")
