@@ -432,7 +432,7 @@ function drawMap(selectYear) {
                 .attr("width", w - 120)
                 .attr("height", h)
                 .style("fill", "url(#gradient)")
-                .attr("transform", "translate(10,450)");
+                .attr("transform", "translate(10,430)");
 
             var y = d3.scaleLinear().range([h, 0]).domain([minVal, maxVal]);
 
@@ -440,7 +440,7 @@ function drawMap(selectYear) {
 
             key.append("g")
                 .attr("class", "y axis")
-                .attr("transform", "translate(40,450)")
+                .attr("transform", "translate(40,430)")
                 .call(yAxis);
 
             function handleMouseOver(d, i) {
