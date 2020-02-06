@@ -478,6 +478,8 @@ var height = 500 - margin.top - margin.bottom;
 const percentFormat = d3.format('.0%');
 var leftPadding = 5;
 var colorScale = d3.scaleOrdinal(d3["schemeCategory20"]);
+var minVal = 0
+var maxVal = 0
 
 
 const delay = function(d, i) {
@@ -492,29 +494,38 @@ function removeGeoAreasWithNoData(data) {
     return data.filter(d => d.value);
 }
 
+function removeCrimeTypesWithNoData(data) {
+    return data.filter(d => d.value);
+}
+
 function prepareData(data) {
-    return data.reduce((accumulator, d) => {
-        Object.keys(d).forEach((k) => {
-        if (!Number.isInteger(+k)) { return; }
-        let value;
-        if (d[+k] === '..') {
-            value = 0;
-        } else {
-            value = +d[+k] / 100;
+    let yearMap = new Map()
+    data.forEach(d => {
+        if (!Number.isInteger(+d.Year)) { return; }
+        if (!yearMap.has(d.Year)) {
+            yearMap.set(d.Year, new Map());
         }
-        const newEntry = {
-            value,
-            geoCode: d.CountryCode,
-            geoName: d.Country,
-        };
-        if (accumulator[+k]) {
-            accumulator[+k].push(newEntry);
-        } else {
-            accumulator[+k] = [newEntry];
+        let crimeMap = yearMap.get(d.Year)
+        if (!crimeMap.has(d.Crime_Code_Description)){
+            crimeMap.set(d.Crime_Code_Description, 0);
         }
+        crimeMap.set(d.Crime_Code_Description, crimeMap.get(d.Crime_Code_Description) + 1);
+    });
+
+    result = new Array()
+    yearMap.forEach((crimeMap, year, map) => {
+        crimeMap.forEach((value, crime, map) => {
+            const newEntry = {
+                value: value,
+                crimeType: crime
+            }
+            if(!result[year]) {
+                result[year] = new Array();
+            }
+            result[year].push(newEntry);
         });
-        return accumulator;
-    }, {});
+    });
+    return result
 }
 
 function xAccessor(d) {
@@ -522,12 +533,14 @@ function xAccessor(d) {
 }
 
 function yAccessor(d) {
-    return d.geoName;
+    return d.crimeType;
 }
 
-var xScale = d3.scaleLinear()
-    .range([0, width])
-    .domain([0, 1]);
+function getXScale(minVal, maxVal) {
+    return d3.scaleLinear()
+        .domain([minVal, maxVal])
+        .range([0, width])
+}
 
 var yScale = d3.scaleBand()
     .rangeRound([0, height], 0.1)
@@ -537,7 +550,7 @@ function drawXAxis(el) {
     el.append('g')
         .attr('class', 'axis axis--x')
         .attr('transform', `translate(${leftPadding},${height})`)
-        .call(d3.axisBottom(xScale).tickFormat(percentFormat));
+        .call(d3.axisBottom(getXScale(minVal, maxVal)));
 }
 
 function drawYAxis(el, data, t) {
@@ -554,29 +567,31 @@ axis.transition(t)
 }
 
 function drawBars(el, data, t) {
-let barsG = el.select('.bars-g');
-if (barsG.empty()) {
-    barsG = el.append('g')
-    .attr('class', 'bars-g');
-}
+    let barsG = el.select('.bars-g');
+    if (barsG.empty()) {
+        barsG = el.append('g')
+        .attr('class', 'bars-g');
+    }
 
-var bars = barsG
-    .selectAll('.bar')
-    .data(data, yAccessor)
+    var xScale = getXScale(minVal, maxVal)
 
-bars.exit()
-    .remove();
-bars.enter()
-    .append('rect')
-    .attr('class', d => d.geoCode === 'WLD' ? 'bar wld' : 'bar')
-    .attr('x', leftPadding)
-    .merge(bars).transition(t)
-    .attr('y', d => yScale(yAccessor(d)))
-    .attr('width', d => xScale(xAccessor(d)))
-    .attr('height', yScale.bandwidth())
-    .style('fill', function(d, i) {
-        return colorScale(d.geoCode); })
-    .delay(delay);
+    var bars = barsG
+        .selectAll('.bar')
+        .data(data, yAccessor)
+
+    bars.exit()
+        .remove();
+    bars.enter()
+        .append('rect')
+        .attr('class', d => d.crimeType === 'WLD' ? 'bar wld' : 'bar')
+        .attr('x', leftPadding)
+        .merge(bars).transition(t)
+        .attr('y', d => yScale(yAccessor(d)))
+        .attr('width', d => xScale(xAccessor(d)))
+        .attr('height', yScale.bandwidth())
+        .style('fill', function(d, i) {
+            return colorScale(d.crimeType); })
+        .delay(delay);
 }
 
 var svg = d3.select('.chart').append('svg')
@@ -585,17 +600,42 @@ var svg = d3.select('.chart').append('svg')
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
-fetch('https://gist.githubusercontent.com/deciob/ffd5c65629e43449246cb80a0af280c7/raw/cddc89a14d414f617e0703bbc1b768ec4b7bc2d4/data.csv')
+function setXBoundaries(selectedData){
+    minVal = getMin(selectedData)
+    maxVal = getMax(selectedData)
+}
+
+function getMin(selectedData) {
+    min = Number.MAX_SAFE_INTEGER
+    selectedData.forEach((data) => {
+        if (data.value < min) {
+            min = data.value
+        }
+    })
+    return min
+}
+
+function getMax(selectedData) {
+    max = Number.MIN_SAFE_INTEGER
+    selectedData.forEach((data) => {
+        if (data.value > max) {
+            max = data.value
+        }
+    })
+    return max
+}
+
+fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/src/data/clean.csv')
 .then((res) => res.text())
 .then((res) => {
     const data = prepareData(d3.csvParse(res));
     const years = Object.keys(data).map(d => +d);
-    const lastYear = years[years.length - 1];
     let startYear = years[0];
-    let selectedData = removeGeoAreasWithNoData(sortData(data[startYear]));
-    let geoAreas = selectedData.map(yAccessor);
+    let selectedData = removeCrimeTypesWithNoData(sortData(data[startYear]))
+    setXBoundaries(selectedData)
+    let crimeTypes = selectedData.map(yAccessor);
 
-    yScale.domain(geoAreas);
+    yScale.domain(crimeTypes);
     drawXAxis(svg, selectedData);
     drawYAxis(svg, selectedData);
     drawBars(svg, selectedData);
