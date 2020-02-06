@@ -654,7 +654,7 @@ function drawBars(el, data, t) {
         .selectAll('.bar')
         .data(data, yAccessor)
 
-    // var tooltip = d3.select("div.tooltip");
+    var bartoolTip = d3.select("div.bartoolTip");
 
     bars.exit()
         .remove();
@@ -670,13 +670,14 @@ function drawBars(el, data, t) {
             return colorScale(d.crimeType); })
         .delay(delay);
     
-    // bars.on("mousemove", function(d){
-    //     tooltip.classed("hidden", false)
-    //             .style("top", (d3.event.pageY) + "px")
-    //             .style("left", (d3.event.pageX + 10) + "px")
-    //             .html("test");
-    // })
-    //     .on("mouseout", function(d){ tooltip.style("display", "none");});
+    bars.on("mousemove", function(d){
+        bartoolTip
+          .style("left", d3.event.pageX - 50 + "px")
+          .style("top", d3.event.pageY - 70 + "px")
+          .style("display", "inline-block")
+          .html((d.area) + "<br>" + "£" + (d.value));
+    })
+        .on("mouseout", function(d){ bartoolTip.style("display", "none");});
 
 }
 
