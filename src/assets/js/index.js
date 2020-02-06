@@ -524,8 +524,8 @@ function drawMap(selectYear) {
 
 // Bar-chart stuff
 
-var margin = {top: 20, right: 30, bottom: 40, left: 260};
-var width = 650 - margin.left - margin.right;
+var margin = {top: 20, right: 120, bottom: 40, left: 100};
+var width = 800 - margin.left - margin.right;
 var height = 500 - margin.top - margin.bottom;
 const percentFormat = d3.format('.0%');
 var leftPadding = 5;
