@@ -469,7 +469,20 @@ function handleClick(d, i) {
         .style("font-size", "24px")
         .text(d.properties.name);
 
-    console.log("Division:  " + d.properties.name)
+    console.log("Division2:  " + d.properties.external_id)
+
+
+    // add bar stuff
+    const t = d3.transition().duration(400);
+
+    data = prepareData(rawData, d.properties.external_id)
+    selectedData = removeGeoAreasWithNoData(sortData(data[year]));
+    setXBoundaries(selectedData)
+
+    yScale.domain(selectedData.map(yAccessor));
+    drawXAxis(svg, selectedData);
+    drawYAxis(svg, selectedData, t);
+    drawBars(svg, selectedData, t);
 }
 
 function clearAll() {
@@ -479,6 +492,18 @@ function clearAll() {
     d3.selectAll("path")
         .style("stroke-width", "1px")
         .style("stroke", "white");
+
+    // add bar stuff
+    const t = d3.transition().duration(400);
+
+    data = prepareData(rawData)
+    selectedData = removeGeoAreasWithNoData(sortData(data[year]));
+    setXBoundaries(selectedData)
+
+    yScale.domain(selectedData.map(yAccessor));
+    drawXAxis(svg, selectedData);
+    drawYAxis(svg, selectedData, t);
+    drawBars(svg, selectedData, t);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -493,6 +518,10 @@ var leftPadding = 5;
 var colorScale = d3.scaleOrdinal(d3["schemeCategory20"]);
 var minVal = 0
 var maxVal = 0
+var rawData = null
+var data = null
+var selectedData = null
+var year = 2010
 
 
 const delay = function(d, i) {
@@ -514,7 +543,7 @@ function removeCrimeTypesWithNoData(data) {
 function prepareData(data, area) {
     let yearMap = new Map()
     data.forEach(d => {
-        if (area == null || data.Area_ID == area) {
+        if (area == null || d.Area_ID == area) {
             if (!Number.isInteger(+d.Year)) { return; }
             if (!yearMap.has(d.Year)) {
                 yearMap.set(d.Year, new Map());
@@ -562,6 +591,8 @@ var yScale = d3.scaleBand()
     .padding(0.1);
 
 function drawXAxis(el) {
+    let axis = el.select('.axis--x');
+    axis.remove()
     el.append('g')
         .attr('class', 'axis axis--x')
         .attr('transform', `translate(${leftPadding},${height})`)
@@ -640,14 +671,29 @@ function getMax(selectedData) {
     return max
 }
 
+d3.select("#year").on("change", function(){
+    const t = d3.transition().duration(400);
+
+    year = $(this).val();
+
+    selectedData = removeGeoAreasWithNoData(sortData(data[year]));
+
+    d3.select('.year').text(year);
+
+    yScale.domain(selectedData.map(yAccessor));
+    drawXAxis(svg, selectedData);
+    drawYAxis(svg, selectedData, t);
+    drawBars(svg, selectedData, t);
+});
+
 fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/src/data/areabycrime.csv')
 .then((res) => res.text())
 .then((res) => {
-    const data = prepareData(d3.csvParse(res));
-    console.log(data)
+    rawData = d3.csvParse(res)
+    data = prepareData(rawData);
     const years = Object.keys(data).map(d => +d);
-    let startYear = years[0];
-    let selectedData = removeCrimeTypesWithNoData(sortData(data[startYear]))
+    year = years[0];
+    selectedData = removeCrimeTypesWithNoData(sortData(data[year]))
     setXBoundaries(selectedData)
     let crimeTypes = selectedData.map(yAccessor);
 
@@ -665,18 +711,4 @@ fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in
         .text(function(d){
             return d;
         });
-    
-    d3.select("#year").on("change", function(){
-        const t = d3.transition().duration(400);
-
-        var year = $(this).val();
-
-        selectedData = removeGeoAreasWithNoData(sortData(data[year]));
-
-        d3.select('.year').text(year);
-
-        yScale.domain(selectedData.map(yAccessor));
-        drawYAxis(svg, selectedData, t);
-        drawBars(svg, selectedData, t);
-    });
 });
