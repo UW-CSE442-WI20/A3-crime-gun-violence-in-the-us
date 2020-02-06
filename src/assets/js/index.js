@@ -378,6 +378,10 @@ svg.selectAll("path")
     .on("mousemove", handleMouseMove)
     .on("click", handleClick);
 
+// clear button
+var clear = d3.select("#clear-button")
+            .on("click", clearAll);
+
 // legend
 // add a legend
 // add a legend
@@ -456,16 +460,25 @@ function handleMouseOut(d, i) {
 
 function handleClick(d, i) {
     // Use D3 to perform action on click event
+    clearAll();
     d3.select(this)
         .style("stroke", "black")
         .style("fill", "black")
         .style("stroke-width", "2px");
-
     d3.select("div.distric-Name")
         .style("font-size", "24px")
         .text(d.properties.name);
 
     console.log("Division:  " + d.properties.name)
+}
+
+function clearAll() {
+    d3.select("div.distric-Name")
+        .text("");
+    tooltip.html("");
+    d3.selectAll("path")
+        .style("stroke-width", "1px")
+        .style("stroke", "white");
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
