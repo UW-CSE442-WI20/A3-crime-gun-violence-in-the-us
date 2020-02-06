@@ -511,18 +511,20 @@ function removeCrimeTypesWithNoData(data) {
     return data.filter(d => d.value);
 }
 
-function prepareData(data) {
+function prepareData(data, area) {
     let yearMap = new Map()
     data.forEach(d => {
-        if (!Number.isInteger(+d.Year)) { return; }
-        if (!yearMap.has(d.Year)) {
-            yearMap.set(d.Year, new Map());
+        if (area == null || data.Area_ID == area) {
+            if (!Number.isInteger(+d.Year)) { return; }
+            if (!yearMap.has(d.Year)) {
+                yearMap.set(d.Year, new Map());
+            }
+            let crimeMap = yearMap.get(d.Year)
+            if (!crimeMap.has(d.Crime_Code_Description)){
+                crimeMap.set(d.Crime_Code_Description, 0);
+            }
+            crimeMap.set(d.Crime_Code_Description, crimeMap.get(d.Crime_Code_Description) + (+d.Count));
         }
-        let crimeMap = yearMap.get(d.Year)
-        if (!crimeMap.has(d.Crime_Code_Description)){
-            crimeMap.set(d.Crime_Code_Description, 0);
-        }
-        crimeMap.set(d.Crime_Code_Description, crimeMap.get(d.Crime_Code_Description) + 1);
     });
 
     result = new Array()
@@ -638,10 +640,11 @@ function getMax(selectedData) {
     return max
 }
 
-fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/src/data/clean.csv')
+fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/src/data/areabycrime.csv')
 .then((res) => res.text())
 .then((res) => {
     const data = prepareData(d3.csvParse(res));
+    console.log(data)
     const years = Object.keys(data).map(d => +d);
     let startYear = years[0];
     let selectedData = removeCrimeTypesWithNoData(sortData(data[startYear]))
