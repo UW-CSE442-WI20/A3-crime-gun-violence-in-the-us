@@ -778,15 +778,15 @@ var label = slider.append("text")
 
 function step() {
     update(x.invert(currentValue));
-    currentValue = currentValue + (targetValue/151);
-    if (currentValue > targetValue) {
-      moving = false;
-      currentValue = 0;
-      clearInterval(timer);
-      // timer = 0;
-      playButton.text("Play");
-      console.log("Slider moving: " + moving);
-    }
+    // currentValue = currentValue + (targetValue/151);
+    // if (currentValue > targetValue) {
+    //   moving = false;
+    //   currentValue = 0;
+    //   clearInterval(timer);
+    //   // timer = 0;
+    //   playButton.text("Play");
+    //   console.log("Slider moving: " + moving);
+    // }
 }
 
 function update(h) {
@@ -797,10 +797,19 @@ function update(h) {
       .text(formatDate(h));
   
     // filter data set and redraw plot
-    var newData = dataset.filter(function(d) {
-      return d.date < h;
-    })
-    drawPlot(newData);
+    // add bar stuff
+    const t = d3.transition().duration(400);
+
+    selectedData = prepareData(rawData)
+        .filter(function(d) {
+            return d[year] == formatDate(h);
+        })
+    // selectedData = removeGeoAreasWithNoData(sortData(data[year]));
+
+    yScale.domain(selectedData.map(yAccessor));
+    drawXAxis(svg, selectedData);
+    drawYAxis(svg, selectedData, t);
+    drawBars(svg, selectedData, t);
 }
 ////////// slider ends //////////
 
@@ -1007,7 +1016,24 @@ fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in
     drawXAxis(svg, selectedData);
     drawYAxis(svg, selectedData);
     drawBars(svg, selectedData);
-    drawMap(selectYear)
+    drawMap(selectYear);
+
+    // play button for year slider
+    playButton
+        .on("click", function() {
+        var button = d3.select(this);
+        if (button.text() == "Pause") {
+        moving = false;
+        clearInterval(timer);
+        // timer = 0;
+        button.text("Play");
+        } else {
+        moving = true;
+        timer = setInterval(step, 400);
+        button.text("Pause");
+        }
+        console.log("Slider moving: " + moving);
+    })
 
     d3.select("#year").selectAll("option")
 		.data(years)
