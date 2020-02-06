@@ -496,7 +496,7 @@ function drawMap(selectYear) {
                 const t = d3.transition().duration(400);
 
                 data = prepareData(rawData, d.properties.external_id)
-                selectedData = removeGeoAreasWithNoData(sortData(data[year]));
+                selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
                 setXBoundaries(selectedData)
 
                 yScale.domain(selectedData.map(yAccessor));
@@ -517,7 +517,7 @@ function drawMap(selectYear) {
                 const t = d3.transition().duration(400);
 
                 data = prepareData(rawData)
-                selectedData = removeGeoAreasWithNoData(sortData(data[year]));
+                selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
                 setXBoundaries(null)
 
                 yScale.domain(selectedData.map(yAccessor));
@@ -557,10 +557,6 @@ const delay = function(d, i) {
 
 function sortData(data) {
     return data.sort((a, b) => b.value - a.value);
-}
-
-function removeGeoAreasWithNoData(data) {
-    return data.filter(d => d.value);
 }
 
 function removeCrimeTypesWithNoData(data) {
@@ -623,8 +619,7 @@ function drawXAxis(el) {
     el.append('g')
         .attr('class', 'axis--x')
         .attr('transform', `translate(${leftPadding},${height})`)
-        // .call(d3.axisBottom(getXScale(minVal, maxVal)));
-        .call(d3.axisBottom(getXScale(0, 45000)));
+        .call(d3.axisBottom(getXScale(0, maxVal + (maxVal / 4))));
 }
 
 function drawYAxis(el, data, t) {
@@ -647,14 +642,11 @@ function drawBars(el, data, t) {
         .attr('class', 'bars-g');
     }
 
-    // var xScale = getXScale(minVal, maxVal)
-    var xScale = getXScale(0, 45000)
+    var xScale = getXScale(0, maxVal + (maxVal/4))
 
     var bars = barsG
         .selectAll('.bar')
         .data(data, yAccessor)
-
-    // var tooltip = d3.select("div.tooltip");
 
     bars.exit()
         .remove();
@@ -669,15 +661,6 @@ function drawBars(el, data, t) {
         .style('fill', function(d, i) {
             return colorScale(d.crimeType); })
         .delay(delay);
-    
-    // bars.on("mousemove", function(d){
-    //     tooltip.classed("hidden", false)
-    //             .style("top", (d3.event.pageY) + "px")
-    //             .style("left", (d3.event.pageX + 10) + "px")
-    //             .html("test");
-    // })
-    //     .on("mouseout", function(d){ tooltip.style("display", "none");});
-
 }
 
 var svg = d3.select('.chart').append('svg')
@@ -813,7 +796,7 @@ var sliderTime = d3
         d3.select('#value-time').text(d3.timeFormat('%Y')(val));
 
         const t = d3.transition().duration(150);
-        selectedData = removeGeoAreasWithNoData(sortData(data[year]));
+        selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
         yScale.domain(selectedData.map(yAccessor));
         drawXAxis(svg, selectedData);
         drawYAxis(svg, selectedData, t);
