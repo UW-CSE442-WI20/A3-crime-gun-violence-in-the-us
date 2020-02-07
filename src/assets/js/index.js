@@ -358,10 +358,11 @@ function drawMap(selectYear) {
                 .attr("width", w)
                 .attr("height", h);
 
-            var lowColor = 'green'
-            var highColor = 'red'
+            // var lowColor = "#FFE3DD"
+            var lowColor = "#FFC0C0"
+            var highColor = "#BA0000"
 
-            var ramp = d3.scaleLinear().domain([minVal, maxVal]).range([lowColor, highColor])
+            var ramp = d3.scaleLinear().domain([5000, 15000]).range([lowColor, highColor])
 
             // // var ramp = d3.scaleQuantize([minVal, maxVal], d3.schemeYlOrRd[])
 
@@ -768,7 +769,7 @@ d3.select('#play-button').on('click', () => {
 function updateCharts(givenYear){
     const t = d3.transition().duration(200);
     // Update the text time
-    d3.select('#value-time').text(givenYear);
+    d3.select('#value-time').text("Year: " + givenYear);
 
     selectedData = removeCrimeTypesWithNoData(sortData(data[givenYear]));
 
@@ -796,7 +797,7 @@ var sliderTime = d3
     .default(new Date(2010, 10, 3))
     .on('onchange', val => {
         year = +(d3.timeFormat('%Y')(val))
-        d3.select('#value-time').text(d3.timeFormat('%Y')(val));
+        d3.select('#value-time').text("Year: " + d3.timeFormat('%Y')(val));
 
         const t = d3.transition().duration(150);
         selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
