@@ -625,6 +625,7 @@ function drawXAxis(el) {
     el.append("text")
         .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
         .attr("transform", "translate("+ (width/2) +","+(height-(topPadding/4))+")")  // centre below axis
+        .style("font-size", "11px")
         .text("Number of Crimes");
 }
 
