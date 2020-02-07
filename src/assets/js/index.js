@@ -533,12 +533,12 @@ function drawMap(selectYear) {
 
 // Bar-chart stuff
 
-var margin = {top: 20, right: 120, bottom: 40, left: 100};
+var margin = {top: 0, right: 120, bottom: 20, left: 100};
 var valueMargin = 4;
-var width = 800 - margin.left - margin.right;
-var height = 500 - margin.top - margin.bottom;
+var width = 750 - margin.left - margin.right;
+var height = 550 - margin.top - margin.bottom;
 const percentFormat = d3.format('.0%');
-var leftPadding = 5;
+var leftPadding = 5, topPadding = 50;
 var colorScale = d3.scaleOrdinal(d3["schemeCategory20"]);
 
 var minVal = 0
@@ -610,7 +610,8 @@ function getXScale(minVal, maxVal) {
 }
 
 var yScale = d3.scaleBand()
-    .rangeRound([0, height], 0.1)
+    // .rangeRound([0, height], 0.1)
+    .rangeRound([topPadding, height - topPadding], 0.1)
     .padding(0.1);
 
 function drawXAxis(el) {
@@ -618,8 +619,13 @@ function drawXAxis(el) {
     axis.remove()
     el.append('g')
         .attr('class', 'axis--x')
-        .attr('transform', `translate(${leftPadding},${height})`)
+        // .attr('transform', `translate(${leftPadding},${height})`)
+        .attr('transform', `translate(${leftPadding},${height - topPadding})`)
         .call(d3.axisBottom(getXScale(0, maxVal + (maxVal / 4))));
+    el.append("text")
+        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+        .attr("transform", "translate("+ (width/2) +","+(height-(topPadding/4))+")")  // centre below axis
+        .text("Number of Crimes");
 }
 
 function drawYAxis(el, data, t) {
