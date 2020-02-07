@@ -382,8 +382,6 @@ function drawMapByYear(selectYear) {
                 .on("click", handleClick);
         
             // legend
-            // add a legend
-            // add a legend
 
             var w = 140, h = 400;
             
@@ -476,6 +474,9 @@ function drawMapByYear(selectYear) {
                     .style("font-size", "42px")
                     .text(d.properties.name);
 
+                d3.select(".bar-name")
+                    .text("Distribution of crimes in " + d.properties.name)
+
                 console.log("Division:  " + d.properties.name)
 
                 // add bar stuff
@@ -494,6 +495,8 @@ function drawMapByYear(selectYear) {
             function clearAll() {
                 d3.select(".div-name")
                     .text("Los Angeles");
+                d3.select(".bar-name")
+                    .text("Distribution of Crimes in Los Angeles")
                 tooltip.html("");
                 d3.selectAll(".district")
                     .style("stroke-width", "1px")
@@ -544,7 +547,7 @@ var year = 2010
 
 
 const delay = function(d, i) {
-    return i * 40;
+    return i * 30;
 };
 
 function sortData(data) {
@@ -1012,8 +1015,6 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
         .on("click", handleClick);
 
     // legend
-    // add a legend
-    // add a legend
 
     var w = 140, h = 400;
 
@@ -1124,6 +1125,8 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
     function clearAll() {
         d3.select(".div-name")
             .text("Los Angeles");
+        d3.select(".bar-name")
+            .text("Distribution of Crimes in Los Angeles")
         tooltip.html("");
         d3.selectAll(".district")
             .style("stroke-width", "1px")
