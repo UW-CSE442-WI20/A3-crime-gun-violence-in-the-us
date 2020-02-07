@@ -520,12 +520,12 @@ function drawMapByYear(selectYear) {
 
 // Bar-chart stuff
 
-var margin = {top: 20, right: 120, bottom: 40, left: 100};
+var margin = {top: 0, right: 120, bottom: 10, left: 100};
 var valueMargin = 4;
-var width = 800 - margin.left - margin.right;
+var width = 750 - margin.left - margin.right;
 var height = 500 - margin.top - margin.bottom;
 const percentFormat = d3.format('.0%');
-var leftPadding = 5;
+var leftPadding = 5, topPadding = 10;
 
 var colors = ["#006699", "#34A853", "#50394c", "#d64161", "#4285F4", "#FBBC05", "#405d27", "#7e4a35", "#FF9900", "#eca1a6", "#3e4444", "#618685","#6b5b95", "#87bdd8", "#ffcc5c", "#ff7b25" ]
 
@@ -612,7 +612,8 @@ function getXScale(minVal, maxVal) {
 }
 
 var yScale = d3.scaleBand()
-    .rangeRound([0, height], 0.1)
+    // .rangeRound([0, height], 0.1)
+    .rangeRound([topPadding, height - topPadding], 0.1)
     .padding(0.1);
 
 function drawXAxis(el) {
@@ -620,8 +621,14 @@ function drawXAxis(el) {
     axis.remove()
     el.append('g')
         .attr('class', 'axis--x')
-        .attr('transform', `translate(${leftPadding},${height})`)
+        // .attr('transform', `translate(${leftPadding},${height})`)
+        .attr('transform', `translate(${leftPadding},${height - topPadding})`)
         .call(d3.axisBottom(getXScale(0, maxVal + (maxVal / 4))));
+    el.append("text")
+        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+        .attr("transform", "translate("+ (width/2) +","+460+")")  // centre below axis
+        .style("font-size", "11px")
+        .text("Number of Crimes");
 }
 
 function drawYAxis(el, data, t) {
@@ -878,10 +885,12 @@ playButton
             clearInterval(timer);
             // timer = 0;
             button.text("Play Overall Crime Viz");
+            document.getElementById("slider-time").style.visibility = "visible";
         } else {
             moving = true;
             timer = setInterval(step, 1000);
             button.text("Pause");
+            document.getElementById("slider-time").style.visibility = "hidden";
         }
         console.log("Slider moving: " + moving);
     })
