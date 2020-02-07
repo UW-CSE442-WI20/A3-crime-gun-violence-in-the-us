@@ -644,59 +644,59 @@ axis.transition(t)
     .delay(delay);
 }
 
-function drawBarsByDivision(el, data, t) {
-    console.log("Draw Bar By Division")
+// function drawBarsByDivision(el, data, t) {
+//     console.log("Draw Bar By Division")
 
-    let barsG = el.select('.bars-g');
-    if (barsG.empty()) {
-        barsG = el.append('g')
-        .attr('class', 'bars-g');
-    }
+//     let barsG = el.select('.bars-g');
+//     if (barsG.empty()) {
+//         barsG = el.append('g')
+//         .attr('class', 'bars-g');
+//     }
 
-    var xScale = getXScale(0, maxVal + (maxVal/4))
+//     var xScale = getXScale(0, maxVal + (maxVal/4))
 
-    var divTooltip = d3.select("div.bartooltip")
+//     var divTooltip = d3.select("div.bartooltip")
 
-    var bars = barsG
-        .selectAll('.bar')
-        .data(data, yAccessor)
+//     var bars = barsG
+//         .selectAll('.bar')
+//         .data(data, yAccessor)
 
-    bars.exit()
-        .remove();
-    bars.enter()
-        .append('rect')
-        .attr('class', d => d.crimeType === 'WLD' ? 'bar wld' : 'bar')
-        .on("mousemove", function(d) {
-            divTooltip.classed("hidden", false)
-                    .style("top", (d3.event.pageY) + "px")
-                    .style("left", (d3.event.pageX + 10) + "px")
-                    .html(d.crimeType + "<br>Total: " + d.value);
-        })
-        .on("mouseover", function(d) {
-            d3.select(this)
-                .style("stroke", "Black")
-                .style("stroke-width", "1.8px")
-                .style("stroke-opacity", "1")
-            return divTooltip.style("hidden", false).html(d.crimeType + "<br>Total: " + d.value);
-        })
-        .on("mouseout", function(d) {
-            divTooltip.classed("hidden", true);
-            d3.select(this).style("stroke-opacity", "0");
-        })
-        .on("click", function(d) {
-            console.log("crime " + d.crimeType)
-            crime_type = prepareCrimeTypeData(rawData, currentYear, d.crimeType)
-            drawMapByCrimeType(currentYear, crime_type, colorScale(d.crimeType))
-        })
-        .merge(bars).transition(t)
-        .attr('x', leftPadding)
-        .attr('y', d => yScale(yAccessor(d)))
-        .attr('width', d => xScale(xAccessor(d)))
-        .attr('height', yScale.bandwidth())
-        .style('fill', function(d, i) {
-            return colorScale(d.crimeType); })
-        .delay(delay);
-}
+//     bars.exit()
+//         .remove();
+//     bars.enter()
+//         .append('rect')
+//         .attr('class', d => d.crimeType === 'WLD' ? 'bar wld' : 'bar')
+//         .on("mousemove", function(d) {
+//             divTooltip.classed("hidden", false)
+//                     .style("top", (d3.event.pageY) + "px")
+//                     .style("left", (d3.event.pageX + 10) + "px")
+//                     .html(d.crimeType + "<br>Total: " + d.value);
+//         })
+//         .on("mouseover", function(d) {
+//             d3.select(this)
+//                 .style("stroke", "Black")
+//                 .style("stroke-width", "1.8px")
+//                 .style("stroke-opacity", "1")
+//             return divTooltip.style("hidden", false).html(d.crimeType + "<br>Total: " + d.value);
+//         })
+//         .on("mouseout", function(d) {
+//             divTooltip.classed("hidden", true);
+//             d3.select(this).style("stroke-opacity", "0");
+//         })
+//         .on("click", function(d) {
+//             console.log("crime " + d.crimeType)
+//             crime_type = prepareCrimeTypeData(rawData, currentYear, d.crimeType)
+//             drawMapByCrimeType(currentYear, crime_type, colorScale(d.crimeType))
+//         })
+//         .merge(bars).transition(t)
+//         .attr('x', leftPadding)
+//         .attr('y', d => yScale(yAccessor(d)))
+//         .attr('width', d => xScale(xAccessor(d)))
+//         .attr('height', yScale.bandwidth())
+//         .style('fill', function(d, i) {
+//             return colorScale(d.crimeType); })
+//         .delay(delay);
+// }
 
 function drawBarsByYear(el, data, t) {
     console.log("Draw Bar By Year")
@@ -739,7 +739,12 @@ function drawBarsByYear(el, data, t) {
         .on("click", function (d) {
             console.log("crime " + d.crimeType)
             crime_type = prepareCrimeTypeData(rawData, currentYear, d.crimeType)
+            d3.select(".div-name").text("Los Angeles");
             drawMapByCrimeType(currentYear, crime_type, colorScale(d.crimeType))
+            data = prepareData(rawData)
+            selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
+            setXBoundaries(null)
+            updateCharts(year, false)
         })
         .merge(bars).transition(t)
         .attr('x', leftPadding)
@@ -844,9 +849,7 @@ var sliderTime = d3
         d3.select('#value-time').text(d3.timeFormat('%Y')(val));
         const t = d3.transition().duration(150);
 
-        data = prepareData(rawData)
         selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
-        setXBoundaries(null)
 
         yScale.domain(selectedData.map(yAccessor));
         drawXAxis(svg, selectedData);
@@ -878,6 +881,7 @@ playButton
     .on("click", function () {
         var button = d3.select(this);
         currentYear = +year
+        updateCharts(currentYear);
         console.log("Current Year " + currentYear)
         if (button.text() == "Pause") {
             moving = false;
@@ -909,26 +913,26 @@ function step() {
     }
 }
 
-function updateCharts(givenYear) {
+function updateCharts(givenYear, updateMap = true) {
     d3.select('#value-time').text(givenYear);
 
     const t = d3.transition().duration(400);
 
-    data = prepareData(rawData)
     selectedData = removeCrimeTypesWithNoData(sortData(data[givenYear]));
-    setXBoundaries(null)
 
     yScale.domain(selectedData.map(yAccessor));
     drawXAxis(svg, selectedData);
     drawYAxis(svg, selectedData, t);
     drawBarsByYear(svg, selectedData, t);
-    drawMapByYear(givenYear)
+    if (updateMap) {
+        drawMapByYear(givenYear)
+    }
 }
 
 
 function drawMapByCrimeType(selectYear, crime_type, color_type) {
 
-    d3.select(".div-name").text("Los Angeles");
+    //d3.select(".div-name").text("Los Angeles");
 
     d3.selectAll(".district")
         .style("stroke-width", "1px")
@@ -1114,7 +1118,7 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
         yScale.domain(selectedData.map(yAccessor));
         drawXAxis(svg, selectedData);
         drawYAxis(svg, selectedData, t);
-        drawBarsByDivision(svg, selectedData, t);
+        drawBarsByYear(svg, selectedData, t);
     }
 
     function clearAll() {
