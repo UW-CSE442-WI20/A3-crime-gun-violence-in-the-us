@@ -842,7 +842,6 @@ var sliderTime = d3
     .on('onchange', val => {
         year = +(d3.timeFormat('%Y')(val))
         d3.select('#value-time').text(d3.timeFormat('%Y')(val));
-        currentYear = year;
         const t = d3.transition().duration(150);
 
         data = prepareData(rawData)
@@ -878,12 +877,11 @@ var playButton = d3.select("#play-button");
 playButton
     .on("click", function () {
         var button = d3.select(this);
-        // currentYear = +year
+        currentYear = +year
         console.log("Current Year " + currentYear)
         if (button.text() == "Pause") {
             moving = false;
             clearInterval(timer);
-            // timer = 0;
             button.text("Play Overall Crime Viz");
             document.getElementById("slider-time").style.visibility = "visible";
         } else {
@@ -896,39 +894,35 @@ playButton
     })
 
 function step() {
-    updateCharts(currentYear);
     currentYear += 1
-    console.log("Current Year " + currentYear)
-    if (currentYear > 2017) {
+    if (currentYear <= 2017) {
+        updateCharts(currentYear);
+    } else {
         moving = false;
-        currentYear = 2010;
+        currentYear = +year;
         d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));
-        // updateCharts(currentYear);
+        document.getElementById("slider-time").style.visibility = "visible";
+        updateCharts(currentYear);
         clearInterval(timer);
-        // timer = 0;
         playButton.text("Play Overall Crime Viz");
         console.log("Slider moving: " + moving);
     }
 }
 
-function updateCharts(year) {
-    // sliderTime.attr("cx", x(givenYear));
-    // // sliderTime.handle(givenYear)
-    // const t = d3.transition().duration(100);
-    // Update the text time
-    d3.select('#value-time').text(year);
+function updateCharts(givenYear) {
+    d3.select('#value-time').text(givenYear);
 
     const t = d3.transition().duration(400);
 
     data = prepareData(rawData)
-    selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
+    selectedData = removeCrimeTypesWithNoData(sortData(data[givenYear]));
     setXBoundaries(null)
 
     yScale.domain(selectedData.map(yAccessor));
     drawXAxis(svg, selectedData);
     drawYAxis(svg, selectedData, t);
     drawBarsByYear(svg, selectedData, t);
-    drawMapByYear(year)
+    drawMapByYear(givenYear)
 }
 
 
