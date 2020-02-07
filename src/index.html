@@ -57,7 +57,7 @@
 				<section id="two" class="wrapper style1">
 					<div class="container">
 						<header class="major">
-							<h2>Crime Heat Map of Los Angeles</h2>
+							<h2>Crime Distribution of Los Angeles</h2>
 							<p>Maecenas vitae tellus feugiat eleifend</p>
 						</header>
 						<div class="row 150%">
@@ -70,15 +70,23 @@
 								<div class="maptooltip"></div>
 								
 							</div>
-							<a class="button small" id="clear-button" style="padding: 0 20px 0 20px;margin: 10px 0 10px 0;">Clear Selected Division</a>
-							<h2 id="value-time" style="font-size: 42px; margin-bottom: 0px;">Year: 2010</h2>
-							<!-- <p id="value-time" style="font-size: 42px; margin-bottom: 0px;"></p> -->
+							<ul style="padding-left: 0;list-style: none; ">
+								<li><a class="button small" id="clear-button" style="width: 230px;margin: 10px 0 10px 0;">Clear</a></li>
+								<li><button id="play-button" style="width: 230px; ">Play Overall Crime Viz</button></li>
+								
+							</ul>
+							<h2 style="margin-bottom: 0px;">Year:</h2>
+							<h2 id="value-time" style="font-size: 70px; margin-left:-150px;margin-bottom: 0px;">2010</h2>
 							<!-- Bar Chart -->
 							<div class="7u 12u$(xsmall)">
 								<div class="image fit captioned">
+									<div id="slider-time" style="padding-left: 200px;"></div>
 									
-									<div><div id="slider-time"></div></div>
-									<div><button id="play-button">Play</button></div>
+									<!-- <div>
+							
+										<div id="slider-time" style="padding-left: 100px;"></div>
+										
+									</div> -->
 									
 									<!-- <h3 class="chart-title">Year <span class="year"></span></h3> -->
 									<div class="chart"></div>

@@ -302,7 +302,7 @@ var lapd_divisions = {
 let startYear = 2010;
 let selectYear = startYear;
 
-function drawMap(selectYear) {
+function drawMapByYear(selectYear) {
     // MAP
     fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/src/data/areabyyear.csv')
         .then((res) => res.text())
@@ -311,27 +311,15 @@ function drawMap(selectYear) {
             var minVal = 0
             var maxVal = 100
             var totalCrime = []
-
-            console.log("Selected Year " + selectYear)
-
             for (var i = 0; i < crime_data.length; i++) {
                 if (crime_data[i].Year == selectYear) {
-                    console.log("Year " + crime_data[i].Year)
-                    console.log("Area " + crime_data[i].Area_ID)
-                    console.log("Count " + crime_data[i].Count)
-
                     totalCrime[crime_data[i].Area_ID] = crime_data[i].Count
                 }
             }
 
-            for (var i = 0; i < totalCrime.length; i++) {
-                console.log("total " + i + " " + totalCrime[i])
-            }
             // heat map
             minVal = 5000
             maxVal = 15000
-            console.log("min " + minVal)
-            console.log("max " + maxVal)
 
             // Width and height
             var margin_map = {right: 10, left: 50 };
@@ -381,14 +369,12 @@ function drawMap(selectYear) {
                 .attr("d", path)
                 .attr("class", "district")
                 .attr("id", function (d) {
-                    console.log("external id  " + d.properties.external_id)
                     return d.properties.external_id;
                 })
                 .style("stroke", "#fff")
                 .style("stroke-width", "1")
                 .style("fill", function (d) {
                     return ramp(totalCrime[d.properties.external_id])
-                    // return ramp(d.properties.external_id)
                 })
                 .on("mouseover", handleMouseOver)
                 .on("mouseout", handleMouseOut)
@@ -458,7 +444,6 @@ function drawMap(selectYear) {
                 // d3.select(this).style("fill", "blue");
                 d3.select(this)
                     .style("fill", "black");
-                console.log("Division:  " + d.properties.name)
                 return tooltip.style("hidden", false).html(d.properties.name + "<br># crime: " + totalCrime[d.properties.external_id]);
             }
 
@@ -503,7 +488,7 @@ function drawMap(selectYear) {
                 yScale.domain(selectedData.map(yAccessor));
                 drawXAxis(svg, selectedData);
                 drawYAxis(svg, selectedData, t);
-                drawBars(svg, selectedData, t);
+                drawBarsByYear(svg, selectedData, t);
             }
 
             function clearAll() {
@@ -524,10 +509,11 @@ function drawMap(selectYear) {
                 yScale.domain(selectedData.map(yAccessor));
                 drawXAxis(svg, selectedData);
                 drawYAxis(svg, selectedData, t);
-                drawBars(svg, selectedData, t);
+                drawBarsByYear(svg, selectedData, t);
             }
         });
 }
+
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // LAPD division : http://geohub.lacity.org/datasets/lapd-divisions/data?geometry=-119.399%2C33.821%2C-117.421%2C34.220&orderBy=PREC
@@ -540,7 +526,12 @@ var width = 800 - margin.left - margin.right;
 var height = 500 - margin.top - margin.bottom;
 const percentFormat = d3.format('.0%');
 var leftPadding = 5;
-var colorScale = d3.scaleOrdinal(d3["schemeCategory20"]);
+
+var colors = ["#006699", "#34A853", "#50394c", "#d64161", "#4285F4", "#FBBC05", "#405d27", "#7e4a35", "#FF9900", "#eca1a6", "#3e4444", "#618685","#6b5b95", "#87bdd8", "#ffcc5c", "#ff7b25" ]
+
+// var colorScale = d3.scaleOrdinal(d3["schemeCategory20"]);
+
+var colorScale = d3.scaleOrdinal(colors)
 
 var minVal = 0
 var maxVal = 0
@@ -562,6 +553,16 @@ function sortData(data) {
 
 function removeCrimeTypesWithNoData(data) {
     return data.filter(d => d.value);
+}
+
+function prepareCrimeTypeData(data, year, crime_code) {
+    var crime_type = []
+    data.forEach(d => {
+        if(d.Year == year && d.Crime_Code_Description == crime_code) {
+            crime_type[d.Area_ID] = d.Count;
+        }
+    });
+    return crime_type
 }
 
 function prepareData(data, area) {
@@ -636,7 +637,9 @@ axis.transition(t)
     .delay(delay);
 }
 
-function drawBars(el, data, t) {
+function drawBarsByDivision(el, data, t) {
+    console.log("Draw Bar By Division")
+
     let barsG = el.select('.bars-g');
     if (barsG.empty()) {
         barsG = el.append('g')
@@ -671,8 +674,12 @@ function drawBars(el, data, t) {
         })
         .on("mouseout", function(d) {
             divTooltip.classed("hidden", true);
-            d3.select(this).transition().duration(250)
-                .style("stroke-opacity", "0");
+            d3.select(this).style("stroke-opacity", "0");
+        })
+        .on("click", function(d) {
+            console.log("crime " + d.crimeType)
+            crime_type = prepareCrimeTypeData(rawData, currentYear, d.crimeType)
+            drawMapByCrimeType(currentYear, crime_type, colorScale(d.crimeType))
         })
         .merge(bars).transition(t)
         .attr('x', leftPadding)
@@ -681,6 +688,60 @@ function drawBars(el, data, t) {
         .attr('height', yScale.bandwidth())
         .style('fill', function(d, i) {
             return colorScale(d.crimeType); })
+        .delay(delay);
+}
+
+function drawBarsByYear(el, data, t) {
+    console.log("Draw Bar By Year")
+    let barsG = el.select('.bars-g');
+    if (barsG.empty()) {
+        barsG = el.append('g')
+            .attr('class', 'bars-g');
+    }
+
+    var xScale = getXScale(0, maxVal + (maxVal / 4))
+
+    var divTooltip = d3.select("div.bartooltip")
+
+    var bars = barsG
+        .selectAll('.bar')
+        .data(data, yAccessor)
+
+    bars.exit()
+        .remove();
+    bars.enter()
+        .append('rect')
+        .attr('class', d => d.crimeType === 'WLD' ? 'bar wld' : 'bar')
+        .on("mousemove", function (d) {
+            divTooltip.classed("hidden", false)
+                .style("top", (d3.event.pageY) + "px")
+                .style("left", (d3.event.pageX + 10) + "px")
+                .html(d.crimeType + "<br>Total: " + d.value);
+        })
+        .on("mouseover", function (d) {
+            d3.select(this)
+                .style("stroke", "Black")
+                .style("stroke-width", "1.8px")
+                .style("stroke-opacity", "1")
+            return divTooltip.style("hidden", false).html(d.crimeType + "<br>Total: " + d.value);
+        })
+        .on("mouseout", function (d) {
+            divTooltip.classed("hidden", true);
+            d3.select(this).style("stroke-opacity", "0");
+        })
+        .on("click", function (d) {
+            console.log("crime " + d.crimeType)
+            crime_type = prepareCrimeTypeData(rawData, currentYear, d.crimeType)
+            drawMapByCrimeType(currentYear, crime_type, colorScale(d.crimeType))
+        })
+        .merge(bars).transition(t)
+        .attr('x', leftPadding)
+        .attr('y', d => yScale(yAccessor(d)))
+        .attr('width', d => xScale(xAccessor(d)))
+        .attr('height', yScale.bandwidth())
+        .style('fill', function (d, i) {
+            return colorScale(d.crimeType);
+        })
         .delay(delay);
 }
 
@@ -736,8 +797,8 @@ fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in
     yScale.domain(crimeTypes);
     drawXAxis(svg, selectedData);
     drawYAxis(svg, selectedData);
-    drawBars(svg, selectedData);
-    drawMap(selectYear);
+    drawBarsByYear(svg, selectedData);
+    drawMapByYear(selectYear);
 
     d3.select("#year").selectAll("option")
 		.data(years)
@@ -750,41 +811,12 @@ fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in
         });
 });
 
-// Play button stuff
-d3.select('#play-button').on('click', () => {
-    var currentYear = +year
-
-    const interval = d3.interval(() => {
-        currentYear += 1
-        if (currentYear <= 2017) {
-            updateCharts(currentYear)
-        } else if (currentYear === 2018) {
-            updateCharts(year)
-        } else {
-            interval.stop();
-        }
-    }, 1000);
-})
-
-function updateCharts(givenYear){
-    const t = d3.transition().duration(200);
-    // Update the text time
-    d3.select('#value-time').text("Year: " + givenYear);
-
-    selectedData = removeCrimeTypesWithNoData(sortData(data[givenYear]));
-
-    yScale.domain(selectedData.map(yAccessor));
-    drawXAxis(svg, selectedData);
-    drawYAxis(svg, selectedData, t);
-    drawBars(svg, selectedData, t);
-    drawMap(givenYear);
-}
-
-
 //Slider stuff
 var dataTime = d3.range(0, 8).map(function(d) {
-    return new Date(2010 + d, 10, 3);
+    return new Date(2010 + d, 01, 01);
 });
+
+var currentYear = 2010;
 
 var sliderTime = d3
     .sliderBottom()
@@ -794,28 +826,313 @@ var sliderTime = d3
     .width(450)
     .tickFormat(d3.timeFormat('%Y'))
     .tickValues(dataTime)
-    .default(new Date(2010, 10, 3))
+    .default(new Date(2010, 01, 01))
+    .handle(
+        d3.symbol()
+            .type(d3.symbolCircle)
+            .size(200)()
+    )
     .on('onchange', val => {
         year = +(d3.timeFormat('%Y')(val))
-        d3.select('#value-time').text("Year: " + d3.timeFormat('%Y')(val));
-
+        d3.select('#value-time').text(d3.timeFormat('%Y')(val));
+        currentYear = year;
         const t = d3.transition().duration(150);
+
+        data = prepareData(rawData)
         selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
+        setXBoundaries(null)
+
         yScale.domain(selectedData.map(yAccessor));
         drawXAxis(svg, selectedData);
         drawYAxis(svg, selectedData, t);
-        drawBars(svg, selectedData, t);
-        drawMap(year);
+        drawBarsByYear(svg, selectedData, t);
+        drawMapByYear(selectYear)
     });
 
 var gTime = d3
     .select('div#slider-time')
     .append('svg')
-    .attr('width', 500)
+    .attr('width', 800)
     .attr('height', 100)
     .append('g')
-    .attr('transform', 'translate(30,30)')
+    .attr('transform', 'translate(30,10)')
 
 gTime.call(sliderTime);
 
 d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));
+
+// play button
+
+var moving = false;
+var targetValue = 1000;
+
+var playButton = d3.select("#play-button");
+
+playButton
+    .on("click", function () {
+        var button = d3.select(this);
+        // currentYear = +year
+        console.log("Current Year " + currentYear)
+        if (button.text() == "Pause") {
+            moving = false;
+            clearInterval(timer);
+            // timer = 0;
+            button.text("Play Overall Crime Viz");
+        } else {
+            moving = true;
+            timer = setInterval(step, 1000);
+            button.text("Pause");
+        }
+        console.log("Slider moving: " + moving);
+    })
+
+function step() {
+    updateCharts(currentYear);
+    currentYear += 1
+    console.log("Current Year " + currentYear)
+    if (currentYear > 2017) {
+        moving = false;
+        currentYear = 2010;
+        d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));
+        // updateCharts(currentYear);
+        clearInterval(timer);
+        // timer = 0;
+        playButton.text("Play Overall Crime Viz");
+        console.log("Slider moving: " + moving);
+    }
+}
+
+function updateCharts(year) {
+    // sliderTime.attr("cx", x(givenYear));
+    // // sliderTime.handle(givenYear)
+    // const t = d3.transition().duration(100);
+    // Update the text time
+    d3.select('#value-time').text(year);
+
+    const t = d3.transition().duration(400);
+
+    data = prepareData(rawData)
+    selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
+    setXBoundaries(null)
+
+    yScale.domain(selectedData.map(yAccessor));
+    drawXAxis(svg, selectedData);
+    drawYAxis(svg, selectedData, t);
+    drawBarsByYear(svg, selectedData, t);
+    drawMapByYear(year)
+}
+
+
+function drawMapByCrimeType(selectYear, crime_type, color_type) {
+
+    d3.select(".div-name").text("Los Angeles");
+
+    d3.selectAll(".district")
+        .style("stroke-width", "1px")
+        .style("stroke", "white");
+
+    const t = d3.transition().duration(400);
+
+    data = prepareData(rawData)
+    selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
+    setXBoundaries(null)
+
+    yScale.domain(selectedData.map(yAccessor));
+    drawXAxis(svg, selectedData);
+    drawYAxis(svg, selectedData, t);
+    drawBarsByYear(svg, selectedData, t);
+
+    // heat map
+    minVal = 0
+    maxVal = 3000
+
+    // Width and height
+    var margin_map = { right: 10, left: 50 };
+    var w = 900 - margin_map.left - margin_map.right;
+    var h = 660;
+
+    var laLatitude = 34.05223;
+    var laLongitude = 118.24368;
+
+    // Define map projection
+    var projection = d3.geoAlbers()
+        .translate([w / 2, h / 2])
+        .scale([60000])
+        .center([0, laLatitude])
+        .rotate([laLongitude, 0]);
+
+    // Define path generator
+    var path = d3.geoPath()
+        .projection(projection);
+
+    // Create map-svg element
+    var mapSvg = d3.select(".map-chart")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h);
+
+    // var lowColor = "#FFE3DD"
+    var lowColor = "#ededed"
+    var highColor = color_type
+
+    var ramp = d3.scaleLinear().domain([0, 3000]).range([lowColor, highColor])
+
+    // clear button
+    var clear = d3.select("#clear-button")
+        .on("click", clearAll);
+
+    // mouseover tooltip
+    var tooltip = d3.select("div.maptooltip");
+
+    // Bind data and create one path per GeoJSON feature
+    mapSvg.selectAll("path")
+        .data(lapd_divisions.features)
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .attr("class", "district")
+        .attr("id", function (d) {
+            return d.properties.external_id;
+        })
+        .style("stroke", "#fff")
+        .style("stroke-width", "1")
+        .style("fill", function (d) {
+            return ramp(crime_type[d.properties.external_id])
+        })
+        .on("mouseover", handleMouseOver)
+        .on("mouseout", handleMouseOut)
+        .on("mousemove", handleMouseMove)
+        .on("click", handleClick);
+
+    // legend
+    // add a legend
+    // add a legend
+
+    var w = 140, h = 400;
+
+    var legendToRemove = d3.select('.legend')
+    legendToRemove.remove()
+
+    var key = d3.select(".map-chart")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h + 700)
+        .attr("class", "legend");
+
+    var legend = key.append("defs")
+        .append("svg:linearGradient")
+        .attr("id", "gradient")
+        .attr("x1", "100%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "100%")
+        .attr("spreadMethod", "pad");
+
+    legend.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", highColor)
+        .attr("stop-opacity", 1);
+
+    legend.append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", lowColor)
+        .attr("stop-opacity", 1);
+
+    key.append("rect")
+        .attr("width", w - 120)
+        .attr("height", h)
+        .style("fill", "url(#gradient)")
+        .attr("transform", "translate(10,280)");
+
+    var y = d3.scaleLinear().range([h, 0]).domain([minVal, maxVal]);
+
+    var yAxis = d3.axisRight(y);
+
+    key.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(40,280)")
+        .call(yAxis);
+
+    // text label for the y axis
+    key.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("transform", "translate(40,270)")
+        .style("text-anchor", "middle")
+        .style("font-size", "10px")
+        .text("Number of crime");
+
+    function handleMouseOver(d, i) {
+        // Use D3 to select element, change color and size
+        d3.select("p").text("District " + this.id);
+        // d3.select(this).style("fill", "blue");
+        d3.select(this)
+            .style("fill", "black");
+        return tooltip.style("hidden", false).html(d.properties.name + "<br># crime: " + crime_type[d.properties.external_id]);
+    }
+
+    function handleMouseMove(d) {
+        tooltip.classed("hidden", false)
+            .style("top", (d3.event.pageY) + "px")
+            .style("left", (d3.event.pageX + 10) + "px")
+            .html(d.properties.name + "<br>total: " + crime_type[d.properties.external_id]);
+    }
+
+    function handleMouseOut(d, i) {
+        // Use D3 to select element, change color and size
+        //console.log("mouse", this);
+        d3.select(this)
+            .style("fill", function (d) {
+                return ramp(crime_type[d.properties.external_id])
+            });
+        tooltip.classed("hidden", true);
+    }
+
+    function handleClick(d, i) {
+        // Use D3 to perform action on click event
+        clearAll();
+        d3.select(this)
+            .style("stroke", "black")
+            .style("fill", "black")
+            .style("stroke-width", "2px");
+
+        d3.select(".div-name")
+            .style("font-size", "42px")
+            .text(d.properties.name);
+
+        console.log("Division:  " + d.properties.name)
+
+        // add bar stuff
+        const t = d3.transition().duration(400);
+
+        data = prepareData(rawData, d.properties.external_id)
+        selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
+        setXBoundaries(selectedData)
+
+        yScale.domain(selectedData.map(yAccessor));
+        drawXAxis(svg, selectedData);
+        drawYAxis(svg, selectedData, t);
+        drawBarsByDivision(svg, selectedData, t);
+    }
+
+    function clearAll() {
+        d3.select(".div-name")
+            .text("Los Angeles");
+        tooltip.html("");
+        d3.selectAll(".district")
+            .style("stroke-width", "1px")
+            .style("stroke", "white");
+
+        // add bar stuff
+        const t = d3.transition().duration(400);
+
+        data = prepareData(rawData)
+        selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
+        setXBoundaries(null)
+
+        yScale.domain(selectedData.map(yAccessor));
+        drawXAxis(svg, selectedData);
+        drawYAxis(svg, selectedData, t);
+        drawBarsByYear(svg, selectedData, t);
+        drawMapByYear(selectYear)
+    }
+}
