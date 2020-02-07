@@ -656,12 +656,6 @@ function drawBars(el, data, t) {
     bars.enter()
         .append('rect')
         .attr('class', d => d.crimeType === 'WLD' ? 'bar wld' : 'bar')
-        .attr('x', leftPadding)
-        .attr('y', d => yScale(yAccessor(d)))
-        .attr('width', d => xScale(xAccessor(d)))
-        .attr('height', yScale.bandwidth())
-        .style('fill', function(d, i) {
-            return colorScale(d.crimeType); })
         .on("mousemove", function(d) {
             divTooltip.classed("hidden", false)
                     .style("top", (d3.event.pageY) + "px")
@@ -681,7 +675,13 @@ function drawBars(el, data, t) {
                 .style("stroke-opacity", "0");
         })
         .merge(bars).transition(t)
-        .delay(delay)
+        .attr('x', leftPadding)
+        .attr('y', d => yScale(yAccessor(d)))
+        .attr('width', d => xScale(xAccessor(d)))
+        .attr('height', yScale.bandwidth())
+        .style('fill', function(d, i) {
+            return colorScale(d.crimeType); })
+        .delay(delay);
 }
 
 var svg = d3.select('.chart').append('svg')
