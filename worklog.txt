@@ -3,26 +3,48 @@ Prompt: Your deployed webpage should also include a write-up with the following 
 An overview of your development process. Describe how the work was split among the team members. Include a commentary on the development process, including answers to the following questions: Roughly how much time did you spend developing your application (in people-hours)? What aspects took the most time?
 
 
-
-
 Our group wants to explore the distribution of different crimes in LA. First of all, we would like our visualization to be able to show the categories of the crimes, the count of each category, and the ranking in counts. We would also like to visually see crime counts and rankings changing with respect to time and locations. Considering these needs, we decided to use a bar chart race as our primary view. For more user friendly, we would like to have our users to specify the constraints of the filters.
 
 Therefore, the analysis consists of a racing bar chart, a map filter, and a year filter working together. The main view is the bar chart visualization. Without specifying district or year, the bar chart will show what types of crimes happen the most in Los Angelas from 2010 to 2018? The side map filter enables the users to select specific district in LA and view the crime distribution in that district. Similarly, with selecting a specific year, the user can view the distribution of that year in particular. The district filter and year filter can work together.
 
 In total, we spent around xxx hours developing our application, and the detailed work log is below. The D3 part took us a significant amount of time. Since we are new to D3, there were extra time we spent to self-learn from online tutorials and similar projects. We also experienced in challenge of making our own LA map by using the raw path data.
 
+Rationale:
+At the start of the project,  we were deciding whether to highlight crimes in Los Angeles or gun violence in the United States. We eventually
+settled for crimes in LA because it is a dataset that one of the member used before for a previous assignment and it is more focused in scope.
+* We want to show a map in our graph because that would more clearly display LA and viewers would have a better understanding of the difference
+of crime rates between various districts. We also decided to make a heatmap to show how many crimes occured in that district with green to red 
+coloring (this is inline with our belief that green signals "safety" and red signals "danger"). Each district would also have a tooltip showing the
+total number of crime in that district
+* When deciding a graph for the various crime types in each district, we were deciding between a pie chart and a bar chart. In the end, we chose
+the bar chart because we want to show the number of crimes in each district instead of percentages of crime relative to the district. In this case,
+the bar chart would make more sense. Each bar in the bar chart would also have a tooltip showing the exact number of times this crime happened.
+* We decided to make a slider. This is the most interactive part of our project. User would put the slider in a certain year. Depending on whether
+a district is chosen, it would show the evolution of crimes in the whole LA (if no district is chosen) or a certain district (if a district is chosen)
+The bar would move around: the crime with the highest number of occurences would float to the very top and crimes that are too small to show within
+the current scale would be deleted for visual asthetics
 
 
-2/3/20: Group meeting 5:30pm - around 8:00pm + self working time at home at night :D
-	discuss about what dataset to use, what visualization we want to show, what interactions we would like to have (map district filter + timeline filter). Divide into 2 subteams: one cleans data and prepare the pipeline (link csv and html and d3 etc.), one prepare the web design, d3-LA map, d3-bar chart race.
+Development Process:
+1. We first brainstormed ideas for the project and what datasets to use.
+2. We then decided on the story we want to tell, the types of graphs we want to show, and division of work
+3. We made basic functionalities work using a template available online
+4. We parsed and cleaned our data, with the data team supplying data forms (which columns to use to include, ...) that the front end team needs
+5. We connected the d3.js with our data and made basic functionalities work
+6. We refined details of our work (making sure objects doesn't overlap with each other, clear out visual bugs, choose better coloring and placement)
+7. Prototype testing with friends and fix details which they were confused about
 
 
-2/3/20: Group meeting 11:30am - 7:30pm
-	LA map w/o linking to our data
-	bar chart try with example data w/o linking to our data
-	year filter w/o linking to our data
-	write-ups ongoing
-	data cleaning/prep have test.csv ready
+Work Division:
+Yin Yin Low		: Team Lead and Front End work (CSS, Map, heatmap)
+Sherry Prawiro	: Front end (Data parsing and connecting within D3, bar chart, html positioning, general debugging)
+Jessica Zhu		: Front end (Slider, Tooltips)
+Jonathan Jusuf	: Back end (Data parsing and cleaning) 
+Aditya Jhamb	: Front end (Clear)
+Total hours		: 20 hours
 
-2/4/20: 
+
+Commentary:
+- Back End: Hardest part was deciding which program is easier to parse our data. We tried Tableau Prep and MySQL and ended up with Pandas.
+			After that, it was studying and figuring out Pandas to clean our data.
 	
