@@ -464,7 +464,7 @@ function drawMapByYear(selectYear) {
 
             function handleClick(d, i) {
                 // Use D3 to perform action on click event
-                clearAll();
+                //clearAll();
                 d3.select(this)
                     .style("stroke", "black")
                     .style("fill", "black")
@@ -474,8 +474,8 @@ function drawMapByYear(selectYear) {
                     .style("font-size", "42px")
                     .text(d.properties.name);
 
-                d3.select(".bar-name")
-                    .text("Distribution of crimes in " + d.properties.name)
+                d3.select("#bar-name")
+                    .text(d.properties.name)
 
                 console.log("Division:  " + d.properties.name)
 
@@ -493,14 +493,29 @@ function drawMapByYear(selectYear) {
             }
 
             function clearAll() {
+                year = 2010
+                d3.select('#value-time').text(year);
+                d3.select('#year-name').text(year);
+                d3.select("#bar-name")
+                    .text("Los Angeles")
+
                 d3.select(".div-name")
                     .text("Los Angeles");
-                d3.select(".bar-name")
-                    .text("Distribution of Crimes in Los Angeles")
                 tooltip.html("");
                 d3.selectAll(".district")
                     .style("stroke-width", "1px")
                     .style("stroke", "white");
+
+                d3.select('div#slider-time').select("svg").remove()
+                gTime = d3
+                    .select('div#slider-time')
+                    .append('svg')
+                    .attr("id", 'slider-svg')
+                    .attr('width', 800)
+                    .attr('height', 100)
+                    .append('g')
+                    .attr('transform', 'translate(30,10)')
+                gTime.call(createSliderTime())
 
                 // add bar stuff
                 const t = d3.transition().duration(400);
@@ -833,7 +848,8 @@ var dataTime = d3.range(0, 8).map(function(d) {
 
 var currentYear = 2010;
 
-var sliderTime = d3
+function createSliderTime() {
+    return d3
     .sliderBottom()
     .min(d3.min(dataTime))
     .max(d3.max(dataTime))
@@ -850,6 +866,7 @@ var sliderTime = d3
     .on('onchange', val => {
         year = +(d3.timeFormat('%Y')(val))
         d3.select('#value-time').text(d3.timeFormat('%Y')(val));
+        d3.select('#year-name').text(d3.timeFormat('%Y')(val));
         const t = d3.transition().duration(150);
 
         selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
@@ -860,18 +877,21 @@ var sliderTime = d3
         drawBarsByYear(svg, selectedData, t);
         drawMapByYear(selectYear)
     });
+}
 
+var sliderTime = createSliderTime();
 var gTime = d3
     .select('div#slider-time')
     .append('svg')
+    .attr("id", 'slider-svg')
     .attr('width', 800)
     .attr('height', 100)
     .append('g')
     .attr('transform', 'translate(30,10)')
-
 gTime.call(sliderTime);
 
 d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));
+d3.select('#year-name').text(d3.timeFormat('%Y')(sliderTime.value()));
 
 // play button
 
@@ -908,6 +928,7 @@ function step() {
         moving = false;
         currentYear = +year;
         d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));
+        d3.select('#year-name').text(d3.timeFormat('%Y')(sliderTime.value()));
         document.getElementById("slider-time").style.visibility = "visible";
         updateCharts(currentYear);
         clearInterval(timer);
@@ -918,6 +939,7 @@ function step() {
 
 function updateCharts(givenYear, updateMap = true) {
     d3.select('#value-time').text(givenYear);
+    d3.select('#year-name').text(givenYear);
 
     const t = d3.transition().duration(400);
 
@@ -934,9 +956,6 @@ function updateCharts(givenYear, updateMap = true) {
 
 
 function drawMapByCrimeType(selectYear, crime_type, color_type) {
-
-    //d3.select(".div-name").text("Los Angeles");
-
     d3.selectAll(".district")
         .style("stroke-width", "1px")
         .style("stroke", "white");
@@ -1107,8 +1126,6 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
             .style("font-size", "42px")
             .text(d.properties.name);
 
-        console.log("Division:  " + d.properties.name)
-
         // add bar stuff
         const t = d3.transition().duration(400);
 
@@ -1123,10 +1140,14 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
     }
 
     function clearAll() {
+        year = 2010
+        d3.select('#value-time').text(year);
+        d3.select('#year-name').text(year);
+        d3.select("#bar-name")
+            .text("Los Angeles")
+
         d3.select(".div-name")
             .text("Los Angeles");
-        d3.select(".bar-name")
-            .text("Distribution of Crimes in Los Angeles")
         tooltip.html("");
         d3.selectAll(".district")
             .style("stroke-width", "1px")
