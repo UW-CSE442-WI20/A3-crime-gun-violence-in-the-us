@@ -464,11 +464,13 @@ function drawMapByYear(selectYear) {
 
             function handleClick(d, i) {
                 // Use D3 to perform action on click event
-                //clearAll();
+                clearDivision();
+
                 d3.select(this)
                     .style("stroke", "black")
-                    .style("fill", "black")
-                    .style("stroke-width", "2px");
+                    .style("stroke-width", "3px");
+
+                // d3.select(this).style("fill", "black");
                 
                 d3.select(".div-name")
                     .style("font-size", "42px")
@@ -490,6 +492,26 @@ function drawMapByYear(selectYear) {
                 drawXAxis(svg, selectedData);
                 drawYAxis(svg, selectedData, t);
                 drawBarsByYear(svg, selectedData, t);
+            }
+
+            function clearDivision() {
+                tooltip.html("");
+                d3.selectAll(".district")
+                    .style("stroke-width", "1px")
+                    .style("stroke", "white");
+
+                // add bar stuff
+                const t = d3.transition().duration(400);
+
+                data = prepareData(rawData)
+                selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
+                setXBoundaries(null)
+
+                yScale.domain(selectedData.map(yAccessor));
+                drawXAxis(svg, selectedData);
+                drawYAxis(svg, selectedData, t);
+                drawBarsByYear(svg, selectedData, t);
+                // drawMapByYear(selectYear)
             }
 
             function clearAll() {
@@ -869,6 +891,7 @@ function createSliderTime() {
         d3.select('#value-time').text(d3.timeFormat('%Y')(val));
         d3.select('#year-name').text(d3.timeFormat('%Y')(val));
         const t = d3.transition().duration(150);
+        selectYear = year
 
         selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
 
@@ -876,7 +899,7 @@ function createSliderTime() {
         drawXAxis(svg, selectedData);
         drawYAxis(svg, selectedData, t);
         drawBarsByYear(svg, selectedData, t);
-        drawMapByYear(selectYear)
+        drawMapByYear(selectYear);
     });
 }
 
@@ -1117,11 +1140,13 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
 
     function handleClick(d, i) {
         // Use D3 to perform action on click event
-        clearAll();
-        d3.select(this)
-            .style("stroke", "black")
-            .style("fill", "black")
-            .style("stroke-width", "2px");
+        clearDivision();
+        // d3.select(this)
+        //     .style("stroke", "black")
+        //     .style("stroke-width", "3px");
+
+        d3.select(this).style("fill", "black");
+
 
         d3.select(".div-name")
             .style("font-size", "42px")
@@ -1142,6 +1167,27 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
         drawYAxis(svg, selectedData, t);
         drawBarsByYear(svg, selectedData, t);
     }
+
+    function clearDivision() {
+        tooltip.html("");
+        // d3.selectAll(".district")
+        //     .style("stroke-width", "1px")
+        //     .style("stroke", "white");
+
+        // add bar stuff
+        const t = d3.transition().duration(400);
+
+        data = prepareData(rawData)
+        selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
+        setXBoundaries(null)
+
+        yScale.domain(selectedData.map(yAccessor));
+        drawXAxis(svg, selectedData);
+        drawYAxis(svg, selectedData, t);
+        drawBarsByYear(svg, selectedData, t);
+        // drawMapByYear(selectYear)
+    }
+
 
     function clearAll() {
         year = 2010
