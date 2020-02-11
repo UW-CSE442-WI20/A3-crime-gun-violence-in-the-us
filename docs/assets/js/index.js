@@ -565,7 +565,7 @@ var height = 500 - margin.top - margin.bottom;
 const percentFormat = d3.format('.0%');
 var leftPadding = 5, topPadding = 10;
 
-var colors = ["#006699", "#34A853", "#50394c", "#d64161", "#4285F4", "#FBBC05", "#405d27", "#7e4a35", "#FF9900", "#eca1a6", "#3e4444", "#618685","#6b5b95", "#87bdd8", "#ffcc5c", "#ff7b25" ]
+var colors = ["#006699", "#34A853", "#50394c", "#8134ad", "#4285F4", "#FBBC05", "#405d27", "#7e4a35", "#FF9900", "#eca1a6", "#3e4444", "#618685","#6b5b95", "#87bdd8", "#ffcc5c", "#ff7b25" ]
 
 // var colorScale = d3.scaleOrdinal(d3["schemeCategory20"]);
 

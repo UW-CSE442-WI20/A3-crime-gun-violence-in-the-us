@@ -4,11 +4,13 @@ An overview of your development process. Describe how the work was split among t
 
 
 Rationale:
+- pie chart vs bar chart 
+
 At the start of the project,  we were deciding whether to highlight crimes in Los Angeles or gun violence in the United States. We eventually
 settled for crimes in LA because it is a dataset that one of the member used before for a previous assignment and it is more focused in scope.
 * We want to show a map in our graph because that would more clearly display LA and viewers would have a better understanding of the difference
-of crime rates between various districts. We also decided to make a heatmap to show how many crimes occured in that district with green to red 
-coloring (this is inline with our belief that green signals "safety" and red signals "danger"). Each district would also have a tooltip showing the
+of crime rates between various districts. We also decided to make a heatmap to show how many crimes occured in that district with red gradient
+coloring (this is inline with our belief that lighter red (salmon) signals "safety" and red signals "danger"). Each district would also have a tooltip showing the
 total number of crime in that district
 * When deciding a graph for the various crime types in each district, we were deciding between a pie chart and a bar chart. In the end, we chose
 the bar chart because we want to show the number of crimes in each district instead of percentages of crime relative to the district. In this case,
