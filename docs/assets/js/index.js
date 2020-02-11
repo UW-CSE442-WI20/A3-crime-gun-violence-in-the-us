@@ -304,7 +304,7 @@ let selectYear = startYear;
 
 function drawMapByYear(selectYear) {
     // MAP
-    fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/src/assets/data/areabyyear.csv')
+    fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/docs/assets/data/areabyyear.csv')
         .then((res) => res.text())
         .then((res) => {
             var crime_data = d3.csvParse(res);
@@ -469,8 +469,6 @@ function drawMapByYear(selectYear) {
                 d3.select(this)
                     .style("stroke", "black")
                     .style("stroke-width", "3px");
-
-                // d3.select(this).style("fill", "black");
                 
                 d3.select(".div-name")
                     .style("font-size", "42px")
@@ -777,6 +775,8 @@ function drawBarsByYear(el, data, t) {
             d3.select(this).style("stroke-opacity", "0");
         })
         .on("click", function (d) {
+            console.log(selectYear)
+            currentYear = selectYear
             console.log("crime " + d.crimeType)
             d3.select(".div-name").text("Los Angeles");
             d3.select("#bar-name").text("Los Angeles")
@@ -834,7 +834,7 @@ function getMax(selectedData) {
     return max
 }
 
-fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/src/assets/data/areabycrime.csv')
+fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/docs/assets/data/areabycrime.csv')
 .then((res) => res.text())
 .then((res) => {
     rawData = d3.csvParse(res)
@@ -1141,12 +1141,10 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
     function handleClick(d, i) {
         // Use D3 to perform action on click event
         clearDivision();
-        // d3.select(this)
-        //     .style("stroke", "black")
-        //     .style("stroke-width", "3px");
 
-        d3.select(this).style("fill", "black");
-
+        d3.select(this)
+            .style("stroke", "black")
+            .style("stroke-width", "3px");
 
         d3.select(".div-name")
             .style("font-size", "42px")
@@ -1170,9 +1168,10 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
 
     function clearDivision() {
         tooltip.html("");
-        // d3.selectAll(".district")
-        //     .style("stroke-width", "1px")
-        //     .style("stroke", "white");
+
+        d3.selectAll(".district")
+            .style("stroke-width", "1px")
+            .style("stroke", "white");
 
         // add bar stuff
         const t = d3.transition().duration(400);
