@@ -101,6 +101,22 @@
 					<script src="./assets/js/index.js"></script>
 				</section>
 
+				<div class="container">
+					<h2>Analysis</h2>
+					<ul>
+						<li>Crime numbers in Los Angeles remain relatively stable throughout 2010 - 2016, with a noticable dip in 2017. We belive this is because data
+							collection is not complete in this year</li>
+						<li>Theft accounts for the biggest share of crime every single year from 2010 - 2017 and burglary #2</li>
+						<li>Fraud replaced Battery as the third most common crime in 2012, which is then replaced by Assault in 2014</li>
+						<li>Fraud had a significant decrease in 2017, placing 6th</li>
+						<li>Generally, crime rate drops every year from 2010 - 2015 and rising again starting in 2016</li>
+						<li>Northern and Eastern districts have relatively less crime than those in the west (near the Calfornia Coast)</li>
+						<li>The 77th Street District has the highest number of total crimes at 13781</li>
+						<li>Central District has the least number of crimes at 6462</li>
+						<li>Crime rate in 2017 dropped by 28% compared to 2010</li>
+					</ul>
+				</div>
+
 			<!-- Three -->
 				<section id="three" class="wrapper style2">
 					<div class="container">
@@ -171,15 +187,66 @@
 					<div class="container">
 						<header class="major">
 							<h2>Rationale for design decisions</h2>
+							<br>
+							<text>At the start of the project,  we were deciding whether to highlight crimes in Los Angeles or gun violence in the United States. We eventually
+								settled for crimes in LA because it is a dataset that one of the member used before for a previous assignment and it is more focused in scope.
+								* We want to show a map in our graph because that would more clearly display LA and viewers would have a better understanding of the difference
+								of crime rates between various districts. We also decided to make a heatmap to show how many crimes occured in that district with green to red 
+								coloring (this is inline with our belief that green signals "safety" and red signals "danger"). Each district would also have a tooltip showing the
+								total number of crime in that district
+								* When deciding a graph for the various crime types in each district, we were deciding between a pie chart and a bar chart. In the end, we chose
+								the bar chart because we want to show the number of crimes in each district instead of percentages of crime relative to the district. In this case,
+								the bar chart would make more sense. Each bar in the bar chart would also have a tooltip showing the exact number of times this crime happened.
+								* We decided to make a slider. This is the most interactive part of our project. User would put the slider in a certain year. Depending on whether
+								a district is chosen, it would show the evolution of crimes in the whole LA (if no district is chosen) or a certain district (if a district is chosen)
+								The bar would move around: the crime with the highest number of occurences would float to the very top and crimes that are too small to show within
+								the current scale would be deleted for visual asthetics
+							</text>
 						</header>
 
 						<header class="major">
 							<h2>Overview of development process</h2>
+							<br>
+							<ul>
+								<li>We first brainstormed ideas for the project and what datasets to use.</li>
+								<li>We then decided on the story we want to tell, the types of graphs we want to show, and division of work</li>
+								<li>We made basic functionalities work using a template available online</li>
+								<li>We parsed and cleaned our data, with the data team supplying data forms (which columns to use to include, ...) that the front end team needs</li>
+								<li>We connected the d3.js with our data and made basic functionalities work</li>
+								<li>We refined details of our work (making sure objects doesn't overlap with each other, clear out visual bugs, choose better coloring and placement)</li>
+								<li>Prototype testing with friends and fix details which they were confused about</li>
+							</ul>
 						</header>
-					
+
+						<header class="major">
+							<h2>Work Division</h2>
+							<br>
+							<ul>
+								<li>Yin Yin Low	: Team Lead and Front End & Back End work (CSS, Map, heatmap)</li>
+								<li>Sherry Prawiro	: Front end & Back End work (Data parsing and connecting within D3, bar chart, html positioning, general debugging)</li>
+								<li>Jessica Zhu	: Front end (Slider, Tooltips, Bar Chart draft and revise, Work-log)</li>
+								<li>Jonathan Jusuf	: Back end (Data parsing and cleaning)</li>
+								<li>Aditya Jhamb	: Front end (Clear)</li>
+							</ul>
+							<text><strong>Total Hour:</strong> 20 hours</text>
+						</header>
+						<header class="major">
+							<h2>Commentary</h2><br>
+							<h3>Back End</h3><br>
+							<ul>
+								<li>Hardest part was deciding which program is easier to parse our data. We tried Tableau Prep and MySQL and ended up with Pandas.
+									After that, it was studying and figuring out Pandas to clean our data.</li>
+								<li>Connecting the data to the chart was tricky, reshaping and preparing the data</li>
+								<li>Since the two charts are connected along with the year slider, it was tricky to filter the data based on many conditions and filters</li>
+							</ul><br>
+							<h3>Front End</h3><br>
+							<ul>
+								<li>We experienced a hard dedugging time in adding tooltips on the bar chart because the bar chart is animated.</li>
+								<li>A lot of bugs and edge cases with display (with coloring, size of bars, title, tooltips, etc), since many of them are connected to each other.</li>
+							</ul>	
+						</header>
 					</div>
 				</section>
-
 
 		<!-- Footer -->
 			<footer id="footer">
