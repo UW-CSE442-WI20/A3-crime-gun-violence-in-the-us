@@ -469,8 +469,6 @@ function drawMapByYear(selectYear) {
                 d3.select(this)
                     .style("stroke", "black")
                     .style("stroke-width", "3px");
-
-                // d3.select(this).style("fill", "black");
                 
                 d3.select(".div-name")
                     .style("font-size", "42px")
@@ -777,6 +775,8 @@ function drawBarsByYear(el, data, t) {
             d3.select(this).style("stroke-opacity", "0");
         })
         .on("click", function (d) {
+            console.log(selectYear)
+            currentYear = selectYear
             console.log("crime " + d.crimeType)
             d3.select(".div-name").text("Los Angeles");
             d3.select("#bar-name").text("Los Angeles")
@@ -1141,12 +1141,10 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
     function handleClick(d, i) {
         // Use D3 to perform action on click event
         clearDivision();
-        // d3.select(this)
-        //     .style("stroke", "black")
-        //     .style("stroke-width", "3px");
 
-        d3.select(this).style("fill", "black");
-
+        d3.select(this)
+            .style("stroke", "black")
+            .style("stroke-width", "3px");
 
         d3.select(".div-name")
             .style("font-size", "42px")
@@ -1170,9 +1168,10 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
 
     function clearDivision() {
         tooltip.html("");
-        // d3.selectAll(".district")
-        //     .style("stroke-width", "1px")
-        //     .style("stroke", "white");
+
+        d3.selectAll(".district")
+            .style("stroke-width", "1px")
+            .style("stroke", "white");
 
         // add bar stuff
         const t = d3.transition().duration(400);
