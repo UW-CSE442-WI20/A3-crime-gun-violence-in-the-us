@@ -304,7 +304,7 @@ let selectYear = startYear;
 
 function drawMapByYear(selectYear) {
     // MAP
-    fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/src/data/areabyyear.csv')
+    fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/src/assets/data/areabyyear.csv')
         .then((res) => res.text())
         .then((res) => {
             var crime_data = d3.csvParse(res);
@@ -834,7 +834,7 @@ function getMax(selectedData) {
     return max
 }
 
-fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/src/data/areabycrime.csv')
+fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/src/assets/data/areabycrime.csv')
 .then((res) => res.text())
 .then((res) => {
     rawData = d3.csvParse(res)
