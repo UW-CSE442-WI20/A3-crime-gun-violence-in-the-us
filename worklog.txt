@@ -1,13 +1,7 @@
-simple Worklog - preparing for writeup
+Writeup
 Prompt: Your deployed webpage should also include a write-up with the following components: A rationale for your design decisions. How did you choose your particular visual encodings and interaction techniques? What alternatives did you consider and how did you arrive at your ultimate choices?
 An overview of your development process. Describe how the work was split among the team members. Include a commentary on the development process, including answers to the following questions: Roughly how much time did you spend developing your application (in people-hours)? What aspects took the most time?
 
-
-Our group wants to explore the distribution of different crimes in LA. First of all, we would like our visualization to be able to show the categories of the crimes, the count of each category, and the ranking in counts. We would also like to visually see crime counts and rankings changing with respect to time and locations. Considering these needs, we decided to use a bar chart race as our primary view. For more user friendly, we would like to have our users to specify the constraints of the filters.
-
-Therefore, the analysis consists of a racing bar chart, a map filter, and a year filter working together. The main view is the bar chart visualization. Without specifying district or year, the bar chart will show what types of crimes happen the most in Los Angelas from 2010 to 2018? The side map filter enables the users to select specific district in LA and view the crime distribution in that district. Similarly, with selecting a specific year, the user can view the distribution of that year in particular. The district filter and year filter can work together.
-
-In total, we spent around xxx hours developing our application, and the detailed work log is below. The D3 part took us a significant amount of time. Since we are new to D3, there were extra time we spent to self-learn from online tutorials and similar projects. We also experienced in challenge of making our own LA map by using the raw path data.
 
 Rationale:
 At the start of the project,  we were deciding whether to highlight crimes in Los Angeles or gun violence in the United States. We eventually
@@ -45,8 +39,23 @@ Total hours	: 20 hours
 
 
 Commentary:
+(Jonathan)
 - Back End: Hardest part was deciding which program is easier to parse our data. We tried Tableau Prep and MySQL and ended up with Pandas.
 			After that, it was studying and figuring out Pandas to clean our data.
 
 - Front End:
 	We experienced a hard dedugging time in adding tooltips on the bar chart because the bar chart is animated.
+
+
+Analysis:
+- Crime numbers in Los Angeles remain relatively stable throughout 2010 - 2016, with a noticable dip in 2017. We belive this is because data
+collection is not complete in this year
+- Theft accounts for the biggest share of crime every single year from 2010 - 2017 and burglary #2
+- Fraud replaced Battery as the third most common crime in 2012, which is then replaced by Assault in 2014
+	- Fraud had a significant decrease in 2017, placing 6th
+
+- Generally, crime rate drops every year from 2010 - 2015 and rising again starting in 2016
+- Northern and Eastern districts have relatively less crime than those in the west (near the Calfornia Coast)
+- The 77th Street District has the highest number of total crimes at 13781
+- Central District has the least number of crimes at 6462
+- Crime rate in 2017 dropped by 28% compared to 2010
