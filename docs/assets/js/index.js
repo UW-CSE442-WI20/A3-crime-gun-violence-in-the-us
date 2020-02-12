@@ -307,6 +307,7 @@ function drawMapByYear(selectYear) {
     fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/docs/assets/data/areabyyear.csv')
         .then((res) => res.text())
         .then((res) => {
+
             var crime_data = d3.csvParse(res);
             var minVal = 0
             var maxVal = 100
@@ -324,7 +325,7 @@ function drawMapByYear(selectYear) {
             // Width and height
             var margin_map = {right: 10, left: 50 };
             var w = 900 - margin_map.left - margin_map.right;
-            var h = 660;
+            var h = 630;
 
             var laLatitude = 34.05223;
             var laLongitude = 118.24368;
@@ -383,7 +384,7 @@ function drawMapByYear(selectYear) {
         
             // legend
 
-            var w = 140, h = 400;
+            var w = 140, h = 350;
             
             var legendToRemove = d3.select('.legend')
             legendToRemove.remove()
@@ -434,7 +435,7 @@ function drawMapByYear(selectYear) {
                 .attr("transform", "translate(40,270)")
                 .style("text-anchor", "middle")
                 .style("font-size", "10px")
-                .text("Number of crime");    
+                .text("Number of Crime");    
 
             function handleMouseOver(d, i) {
                 // Use D3 to select element, change color and size
@@ -469,7 +470,7 @@ function drawMapByYear(selectYear) {
                 d3.select(this)
                     .style("stroke", "black")
                     .style("stroke-width", "3px");
-                
+                d3.select('#crime-dist').text("Overall Crime Distribution in");
                 d3.select(".div-name")
                     .style("font-size", "42px")
                     .text(d.properties.name);
@@ -518,7 +519,7 @@ function drawMapByYear(selectYear) {
                 d3.select('#year-name').text(year);
                 d3.select("#bar-name")
                     .text("Los Angeles")
-
+                d3.select('#crime-dist').text("Overall Crime Distribution in");
                 d3.select(".div-name")
                     .text("Los Angeles");
                 tooltip.html("");
@@ -566,8 +567,6 @@ const percentFormat = d3.format('.0%');
 var leftPadding = 5, topPadding = 10;
 
 var colors = ["#006699", "#34A853", "#50394c", "#8134ad", "#4285F4", "#FBBC05", "#405d27", "#7e4a35", "#FF9900", "#eca1a6", "#3e4444", "#618685","#6b5b95", "#87bdd8", "#ffcc5c", "#ff7b25" ]
-
-// var colorScale = d3.scaleOrdinal(d3["schemeCategory20"]);
 
 var colorScale = d3.scaleOrdinal(colors)
 
@@ -666,7 +665,7 @@ function drawXAxis(el) {
         .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
         .attr("transform", "translate("+ (width/2) +","+460+")")  // centre below axis
         .style("font-size", "11px")
-        .text("Number of Crimes");
+        .text("Number of Crime");
 }
 
 function drawYAxis(el, data, t) {
@@ -778,10 +777,11 @@ function drawBarsByYear(el, data, t) {
             console.log(selectYear)
             currentYear = selectYear
             console.log("crime " + d.crimeType)
+            d3.select('#crime-dist').text("Overall Crime Distribution in");
             d3.select(".div-name").text("Los Angeles");
             d3.select("#bar-name").text("Los Angeles")
             crime_type = prepareCrimeTypeData(rawData, currentYear, d.crimeType)
-            drawMapByCrimeType(currentYear, crime_type, colorScale(d.crimeType))
+            drawMapByCrimeType(currentYear, crime_type, colorScale(d.crimeType), d.crimeType)
             data = prepareData(rawData)
             selectedData = removeCrimeTypesWithNoData(sortData(data[year]));
             setXBoundaries(null)
@@ -888,6 +888,7 @@ function createSliderTime() {
     )
     .on('onchange', val => {
         year = +(d3.timeFormat('%Y')(val))
+        d3.select('#crime-dist').text("Overall Crime Distribution in");
         d3.select('#value-time').text(d3.timeFormat('%Y')(val));
         d3.select('#year-name').text(d3.timeFormat('%Y')(val));
         const t = d3.transition().duration(150);
@@ -926,6 +927,7 @@ var playButton = d3.select("#play-button");
 
 playButton
     .on("click", function () {
+        d3.select('#crime-dist').text("Overall Crime Distribution in");
         var button = d3.select(this);
         currentYear = +year
         updateCharts(currentYear);
@@ -978,8 +980,21 @@ function updateCharts(givenYear, updateMap = true) {
     }
 }
 
+function getMaxCrime(crime_type) {
+    var max = Number.MIN_SAFE_INTEGER
+    for (var i = 0; i < crime_type.length; i++) {
+        if (crime_type[i] > max) {
+            max = crime_type[i];
+        }
+    }
+    console.log("max crime count " + max)
+    return max
+}
 
-function drawMapByCrimeType(selectYear, crime_type, color_type) {
+
+function drawMapByCrimeType(selectYear, crime_type, color_type, crime_name) {
+    d3.select('#crime-dist').text(crime_name + " Crime Distribution in");
+
     d3.selectAll(".district")
         .style("stroke-width", "1px")
         .style("stroke", "white");
@@ -1002,7 +1017,7 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
     // Width and height
     var margin_map = { right: 10, left: 50 };
     var w = 900 - margin_map.left - margin_map.right;
-    var h = 660;
+    var h = 630;
 
     var laLatitude = 34.05223;
     var laLongitude = 118.24368;
@@ -1028,7 +1043,7 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
     var lowColor = "#ededed"
     var highColor = color_type
 
-    var ramp = d3.scaleLinear().domain([0, 3000]).range([lowColor, highColor])
+    var ramp = d3.scaleLinear().domain([minVal, maxVal]).range([lowColor, highColor])
 
     // clear button
     var clear = d3.select("#clear-button")
@@ -1059,7 +1074,7 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
 
     // legend
 
-    var w = 140, h = 400;
+    var w = 140, h = 350;
 
     var legendToRemove = d3.select('.legend')
     legendToRemove.remove()
@@ -1110,7 +1125,7 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
         .attr("transform", "translate(40,270)")
         .style("text-anchor", "middle")
         .style("font-size", "10px")
-        .text("Number of crime");
+        .text("Number of Crime");
 
     function handleMouseOver(d, i) {
         // Use D3 to select element, change color and size
@@ -1122,6 +1137,7 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
     }
 
     function handleMouseMove(d) {
+        console.log("crime count " + crime_type[d.properties.external_id])
         tooltip.classed("hidden", false)
             .style("top", (d3.event.pageY) + "px")
             .style("left", (d3.event.pageX + 10) + "px")
@@ -1145,7 +1161,7 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
         d3.select(this)
             .style("stroke", "black")
             .style("stroke-width", "3px");
-
+        d3.select('#crime-dist').text("Overall Crime Distribution in");
         d3.select(".div-name")
             .style("font-size", "42px")
             .text(d.properties.name);
@@ -1164,6 +1180,7 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
         drawXAxis(svg, selectedData);
         drawYAxis(svg, selectedData, t);
         drawBarsByYear(svg, selectedData, t);
+        drawMapByYear(selectYear)
     }
 
     function clearDivision() {
@@ -1194,7 +1211,7 @@ function drawMapByCrimeType(selectYear, crime_type, color_type) {
         d3.select('#year-name').text(year);
         d3.select("#bar-name")
             .text("Los Angeles")
-
+        d3.select('#crime-dist').text("Overall Crime Distribution in");
         d3.select(".div-name")
             .text("Los Angeles");
         tooltip.html("");

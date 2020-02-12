@@ -27,6 +27,16 @@ h1 {
   text-align: center;
 }
 
+#play-button:active,
+.button.play-button:active {
+	background-color: #ff6b6b;
+}
+
+#play-button:hover,
+button.play-button:hover {
+	background-color: #93929b;
+}
+
 /*
 	Spatial by TEMPLATED
 	templated.co @templatedco

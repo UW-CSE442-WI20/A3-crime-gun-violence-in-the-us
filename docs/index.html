@@ -66,12 +66,15 @@
 							<text> "Play the overall crime viz" will play how crime changes in chosen district from chosen year to 2017</text> </br>
 							<text> "Clear" button will default all selection to default (no district, no crime, year 2010)</text> </br> 
 							<text> Hover over the district to see district name and total crime in that area (or a certain crime if a crime is chosen)</text> </br> </br>
-							<h2>Los Angeles Crime Report 2010 - 2017</h2>
 						</header>
-						<div class="row 150%">
+						<header style="margin-bottom: 0px;" class="major">
+							<h2 >Los Angeles Crime Report 2010 - 2017</h2>
+						</header>
+						<div class="row 150%" >
 							<!-- Map -->
 							<div class="5u 12u$(xsmall)">
 								<div class="image fit captioned">
+									<h2 id= "crime-dist" style="font-size: 20px; margin-bottom: 0px;">Overall Crime Distribution in </h2>
 									<h2 class="div-name" style="font-size: 42px; margin-bottom: 0px;">Los Angeles </h2>
 									<svg class="map-chart"></svg>
 								</div>
@@ -80,10 +83,10 @@
 							</div>
 							<ul style="padding-left: 0;list-style: none; ">
 								<li><a class="button small" id="clear-button" style="width: 230px;margin: 10px 0 10px 0;">Clear</a></li>
-								<li><button id="play-button" style="width: 230px; ">Play Overall Crime Viz</button></li>
+								<li><button id="play-button" style="width: 230px; background-color: #d45d55;">Play Overall Crime Viz</button></li>
 								
 							</ul>
-							<h2 style="margin-bottom: 0px;">Year:</h2>
+							<h2 style="margin-bottom: 0px;">Year</h2>
 							<h2 id="value-time" style="font-size: 70px; margin-left:-150px;margin-bottom: 0px;">2010</h2>
 							<!-- Bar Chart -->
 							<div class="7u 12u$(xsmall)">
@@ -188,20 +191,23 @@
 						<header class="major">
 							<h2>Rationale for design decisions</h2>
 							<br>
-							<text>At the start of the project,  we were deciding whether to highlight crimes in Los Angeles or gun violence in the United States. We eventually
-								settled for crimes in LA because it is a dataset that one of the member used before for a previous assignment and it is more focused in scope.
-								* We want to show a map in our graph because that would more clearly display LA and viewers would have a better understanding of the difference
-								of crime rates between various districts. We also decided to make a heatmap to show how many crimes occured in that district with green to red 
-								coloring (this is inline with our belief that green signals "safety" and red signals "danger"). Each district would also have a tooltip showing the
-								total number of crime in that district
-								* When deciding a graph for the various crime types in each district, we were deciding between a pie chart and a bar chart. In the end, we chose
-								the bar chart because we want to show the number of crimes in each district instead of percentages of crime relative to the district. In this case,
-								the bar chart would make more sense. Each bar in the bar chart would also have a tooltip showing the exact number of times this crime happened.
-								* We decided to make a slider. This is the most interactive part of our project. User would put the slider in a certain year. Depending on whether
-								a district is chosen, it would show the evolution of crimes in the whole LA (if no district is chosen) or a certain district (if a district is chosen)
-								The bar would move around: the crime with the highest number of occurences would float to the very top and crimes that are too small to show within
-								the current scale would be deleted for visual asthetics
-							</text>
+							<ul>
+								<li>At the start of the project, we were deciding whether to highlight crimes in Los Angeles or gun violence in the United
+								States. We eventually settled for crimes in LA because it is a dataset that one of the member used before for a previous assignment and it is
+								more focused in scope. </li>
+								<li>We want to show a map in our graph because that would more clearly display LA and viewers would have a better
+								understanding of the difference of crime rates between various districts. We also decided to make a heatmap to show how many crimes occured in that
+								district with green to red coloring (this is inline with our belief that green signals "safety" and red signals "danger"). Each district would also
+								have a tooltip showing the total number of crime in that district.</li>
+								<li>When deciding a graph for the various crime types in each district, we were deciding between a pie chart and a bar
+								chart. In the end, we chose the bar chart because we want to show the number of crimes in each district instead of percentages of crime relative to
+								the district. In this case, the bar chart would make more sense. Each bar in the bar chart would also have a tooltip showing the exact number of
+								times this crime happened.</li>
+								<li>We decided to make a slider. This is the most interactive part of our project. User would put the slider in a certain
+								year. Depending on whether a district is chosen, it would show the evolution of crimes in the whole LA (if no district is chosen) or a certain
+								district (if a district is chosen). The bar would move around: the crime with the highest number of occurences would float to the very top and crimes that
+								are too small to show within the current scale would be deleted for visual asthetics</li>
+							</ul>
 						</header>
 
 						<header class="major">
