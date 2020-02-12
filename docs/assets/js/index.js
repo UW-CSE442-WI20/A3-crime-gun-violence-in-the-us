@@ -303,6 +303,7 @@ let startYear = 2010;
 let selectYear = startYear;
 
 function drawMapByYear(selectYear) {
+    console.log("drawMapByYear")
     // MAP
     fetch('https://raw.githubusercontent.com/UW-CSE442-WI20/A3-crime-gun-violence-in-the-us/master/docs/assets/data/areabyyear.csv')
         .then((res) => res.text())
@@ -993,6 +994,7 @@ function getMaxCrime(crime_type) {
 
 
 function drawMapByCrimeType(selectYear, crime_type, color_type, crime_name) {
+    console.log("drawMapByCrimeType")
     d3.select('#crime-dist').text(crime_name + " Crime Distribution in");
 
     d3.selectAll(".district")
