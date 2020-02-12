@@ -929,6 +929,7 @@ var playButton = d3.select("#play-button");
 playButton
     .on("click", function () {
         d3.select('#crime-dist').text("Overall Crime Distribution in");
+        d3.select(".div-name").text("Los Angeles");
         var button = d3.select(this);
         currentYear = +year
         updateCharts(currentYear);
