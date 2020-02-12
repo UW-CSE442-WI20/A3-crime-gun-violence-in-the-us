@@ -981,18 +981,6 @@ function updateCharts(givenYear, updateMap = true) {
     }
 }
 
-function getMaxCrime(crime_type) {
-    var max = Number.MIN_SAFE_INTEGER
-    for (var i = 0; i < crime_type.length; i++) {
-        if (crime_type[i] > max) {
-            max = crime_type[i];
-        }
-    }
-    console.log("max crime count " + max)
-    return max
-}
-
-
 function drawMapByCrimeType(selectYear, crime_type, color_type, crime_name) {
     console.log("drawMapByCrimeType")
     d3.select('#crime-dist').text(crime_name + " Crime Distribution in");
